@@ -162,7 +162,7 @@
                 c.append(i)
         return self.quickSort(a) + b + self.quickSort(c)
 
-####Quick-select
+###Quick-select
 这个只要体会了思想，题目倒并不是很难，但如果不理解这个思想的话有的题目是完全无从措手的
 
 相关leetcode题目：4. Median of Two Sorted Arrays，这道题因为是两个已经排好序的数列，可以略去一些选择的步骤
@@ -191,6 +191,31 @@
             else:
                 return self.quickselect(c, k - len(a) - len(b))
 
+####4. Median of Two Sorted Arrays
+There are two sorted arrays nums1 and nums2 of size m and n respectively. Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).
+
+本题就是采用的Quick-select的思想，把求两个有序数列中位数，转化成求两个有序数列中第k大的数。采取减治法：将两个数列各自分成两段，两数列前半段共有k个数字；如果两数列前半段的末尾数字相等，那即为所求；否则的话，尾数较小的一个前半段中是不可能出现这个第k大数字的，下次递归时略去即可。	
+
+	public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+		int l = nums1.length + nums2.length;
+		if (l % 2 == 1) return findKth(nums1, nums2, (l/2+1));
+		else return (findKth(nums1, nums2, l/2) + findKth(nums1, nums2, l/2+1))/2.0;
+	}
+	public double findKth(int[] nums1, int[] nums2, int k){
+		int l = k/2, l1 = nums1.length, l2 = nums2.length;
+		if (l1>l2) return findKth(nums2, nums1, k);
+		if (l1==0) return nums2[k‐1];
+		if (k==1) return Math.min(nums1[0], nums2[0]);
+		int pa = Math.min(l, l1), pb = k ‐ pa;
+		if (nums1[pa‐1] == nums2[pb‐1]) return nums1[pa‐1];
+		else if (nums1[pa‐1] < nums2[pb‐1]){
+			int[] temp = Arrays.copyOfRange(nums1, pa, l1);
+			return findKth(temp, nums2, k ‐ pa);
+		} else {
+			int[] temp = Arrays.copyOfRange(nums2, pb, l2);
+			return findKth(nums1, temp, k ‐ pb);
+		}
+	}
 ##Binary Search
 二分搜索的思想是很简单的，但一次性写对也不容易：
 
