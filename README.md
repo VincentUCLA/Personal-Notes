@@ -313,6 +313,29 @@ class UF:
 ##BST Backtracking & Permutation
 
 ##Hash Table
+####1. Two Sum
+Given an array of integers, return indices of the two numbers such that they add up to a specific target. You may assume that each input would have exactly one solution.
+
+从头至尾检索一遍数组，如果Hashmap里没有(target - nums[i])就丢进去{nums[i], i}，否则的话就是遇到了结果，返回(target - nums[i])的角标
+（Hashmap.get(target - nums[i])）和当前角标。
+~~~~
+public int[] twoSum(int[] nums, int target) {
+    if (nums == null || nums.length == 0)
+            return new int[]{0, 0};
+    Map<Integer, Integer> hashmap = new HashMap<Integer, Integer>();
+    int index1 = 0, index2 = 0;
+    for (int i = 0; i < nums.length; i++) {
+        if (hashmap.containsKey(target - nums[i])) {
+            index1 = hashmap.get(target - nums[i]);
+            index2 = i;
+            return new int[]{index1, index2};
+        } else {
+            hashmap.put(nums[i], i);
+        }
+    }
+    return new int[]{0, 0};
+}
+~~~~
 
 ##Linked List
 
@@ -355,3 +378,7 @@ leetcode四大陈腔滥调：回溯搜索、动态规划、双指针，二分法
 ##Bit manipulation
 
 ##Misc
+####1. Two Sum
+
+~~~~
+~~~~
