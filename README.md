@@ -80,12 +80,6 @@
 ##Sorting
 选择排序最好理解，每次迭代都从子数组里寻找最小值即可，第k次迭代抽出来的即是第k小值
 
-插入排序的话需要假设前面第i-1个数字是排好序的，然后把第i个数字插到已经排好序的数组里的恰当位置；既然是插入
-
-合并排序好想但一次过不是很容易，要点是每排完一个数组就把另一个数组剩余值贴后面
-
-快速排序没什么好说的
-
     def swap(self, arr, i, j):
         temp = arr[j]
         arr[j] = arr[i]
@@ -103,7 +97,9 @@
             self.swap(arr, i, m)
         return arr
 
-    def insertSort(self, arr):
+插入排序的话需要假设前面第i-1个数字是排好序的，然后把第i个数字插到已经排好序的数组里的恰当位置；既然是插入那么其实用链表比用数组要经济
+
+    def insertSort(self, arr):
         l = len(arr)
         for i in range(1, l):
             temp = arr[i]
@@ -113,6 +109,8 @@
                 j -= 1
             arr[j+1] = temp
         return arr
+
+合并排序很容易理解，要点是每排完一个数组就把另一个数组剩余值贴后面
 
     def merge(self, arr1, arr2):
         arr = []
@@ -144,6 +142,8 @@
             m1 = self.mergeSort(arr[0:l1])
             m2 = self.mergeSort(arr[l1:])
             return self.merge(m1, m2)
+
+快速排序没什么好说的
 
     def quickSort(self, arr):
         l = len(arr)
