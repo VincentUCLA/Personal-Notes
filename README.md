@@ -4,6 +4,7 @@
 
 中缀到后缀转换：要点在于，为什么遇到计算符时要把优先级大于等于自己的运算符全部弹出？因为在后缀表达式里他们放在前面就等于先去计算他们啊；栈在这里实际上就是起到的一个保存计算顺序的作用，而“有控制地”从栈中弹出运算符可以达到把中缀式代换成语法树（也就是后缀式）的目的。
 计算后缀式：这个不难，唯一需要注意的部分是两个操作数的弹出顺序。
+
 相关leetcode题目：150. Evaluate Reverse Polish Notation, 224. Basic Calculator
 
     def tokenize(self, str):
@@ -78,8 +79,11 @@
 
 ##Sorting
 选择排序最好理解，每次迭代都从子数组里寻找最小值即可，第k次迭代抽出来的即是第k小值
+
 插入排序的话需要假设前面第i-1个数字是排好序的，然后把第i个数字插到已经排好序的数组里的恰当位置；既然是插入
+
 合并排序好想但一次过不是很容易，要点是每排完一个数组就把另一个数组剩余值贴后面
+
 快速排序没什么好说的
 
     def swap(self, arr, i, j):
@@ -252,8 +256,22 @@ Quick-find: 确定两个点是否处在同一个连通集里：遍历所有的�
 	                        self.id[j] = qID
 	                self.dump()
 
-##BST & Heap
- ---
+##BST Backtracking & Permutation
+
+##Hash Table
+
+##Linked List
+
+##Two pointers
+
+##Matrix
+
+##Greedy
+
+##Heap
+
+##Dynamic Programming
+
 ##Graph
 
 ####Connected & Reachable
@@ -279,3 +297,7 @@ leetcode四大陈腔滥调：回溯搜索、动态规划、双指针，二分法
 ####KMP Algorithm
 
 ####Huffman Algorithm
+
+##Bit manipulation
+
+##Misc
