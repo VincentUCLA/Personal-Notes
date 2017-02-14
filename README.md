@@ -3,7 +3,6 @@
 ####Infix Expression Evaluation
 
 中缀到后缀转换：要点在于，为什么遇到计算符时要把优先级大于等于自己的运算符全部弹出？因为在后缀表达式里他们放在前面就等于先去计算他们啊；栈在这里实际上就是起到的一个保存计算顺序的作用，而“有控制地”从栈中弹出运算符可以达到把中缀式代换成语法树（也就是后缀式）的目的。
-计算后缀式：这个不难，唯一需要注意的部分是两个操作数的弹出顺序。
 
 相关leetcode题目：150. Evaluate Reverse Polish Notation, 224. Basic Calculator
 
@@ -50,6 +49,8 @@
         while len(stk) > 0:
             ret.append(stk.pop())
         return ret
+
+计算后缀式：这个不难，唯一需要注意的部分是两个操作数的弹出顺序。
 
     def cal(self, optr, opte1, opte2):
         opt1 = int(opte1)
