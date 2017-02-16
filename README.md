@@ -726,7 +726,7 @@ public boolean isMatch(String s, String p) {
     dp[0][0] = true;
     for (int i = 0; i<p.length(); i++)
         if (p.charAt(i) == '*' && dp[0][i - 1])
-    dp[0][i + 1] = true;
+            dp[0][i + 1] = true;
     for (int i = 0; i<s.length(); i++)
         for (int j = 0; j<p.length(); j++){
             if (s.charAt(i) == p.charAt(j) || p.charAt(j) == '.')
