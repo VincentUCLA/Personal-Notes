@@ -710,10 +710,11 @@ The matching should cover the entire input string (not partial).
 
 预处理：用dp[i][j]表示s串的前i个字符和p串的前j个字符是否匹配。dp[0][0] = true；
 
-如果p[i]为'*'，则dp[0][i] 需要p一直为'*'才为真
-1. 如果s[i] == p[j]或p[j] == '.'，dp[i+1][j+1] = dp[i][j]；
-2. 如果p[j] == '*'
-    1. 如果s[i] == p[j-1] 或p[j1] == '.'，dp[i+1][j+1]取下列三者的或
+如果p[i]为'\*'，则dp[0][i] 需要p一直为'\*'才为真
+
+1. 如果s[i] == p[j]或p[j] == '\.'，dp[i+1][j+1] = dp[i][j]；
+2. 如果p[j] == '\*'
+    1. 如果s[i] == p[j-1] 或p[j1] == '\.'，dp[i+1][j+1]取下列三者的或
         1. dp[i][j+1] （a*代表多个a）
         2. dp[i+1][j] （a*代表一个a）
         3. dp[i+1][j-1] （a*不代表a）
@@ -742,11 +743,11 @@ public boolean isMatch(String s, String p) {
 }
 ~~~~
 ####44. Wildcard Matching
-Implement wildcard pattern matching with support for '?' and '*'.
+Implement wildcard pattern matching with support for '\?' and '\*'.
 
-'?' Matches any single character.
+'\?' Matches any single character.
 
-'*' Matches any sequence of characters (including the empty sequence).
+'\*' Matches any sequence of characters (including the empty sequence).
 
 The matching should cover the entire input string (not partial).
 
