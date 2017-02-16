@@ -267,6 +267,30 @@ def binarysearch(self, arr, k, lo, hi):
         return self.binarysearch(arr, k, m + 1, hi)
 ~~~~
 
+####35. Search Insert Position
+Given a sorted array and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order. You may assume no duplicates in the array.
+
+本题几乎是二分搜索的“母题”，需要熟练掌握；由于他不会给一个超大的数组，不需要考虑溢出问题
+~~~~
+public static int searchInsert(int[] nums, int target) {
+    if (nums == null)
+        return - 1;
+    int i = 0;
+    int j = nums.length;
+    if (target > nums[nums.length - 1]) return nums.length;
+    else {
+        while (i < j) {
+            int m = (i + j) / 2;
+            if (target > nums[m])
+                i = m + 1;
+            else
+                j = m;
+        }
+    }
+    return j;
+}
+~~~~
+
 相关leetcode题目：这真的是要多少有多少……
 
 ##Union-find
@@ -310,8 +334,126 @@ class UF:
                 self.dump()
 ~~~~
 
-##BST Backtracking & Permutation
+##Backtracking & Permutation
+###1. Depth First Search
+leetcode四大陈腔滥调：回溯搜索、动态规划、双指针，二分法之首的回溯搜索
+####51. N-Queens
+这题太老套就不叙述题目了，本题是回溯搜索的母题，注意不要为了图省事每次调用递归函数都复制一遍棋盘，放在640k内存的时代这么玩妥妥爆栈。至于位操作之类属于奇技淫巧，实际上很影响代码可读性。
 
+回溯搜索的实质在于，调用递归函数前更改的条件，要在调用完之后再改回来。
+~~~~
+public List<List<String>> solveNQueens(int n) {
+    List<List<String>> ret = new ArrayList<>();
+    ArrayList<String> board = new ArrayList<>();
+    for (int i = 0; i<n; i++) {
+        char[] input = new char[n];
+        Arrays.fill(input, '.');
+        board.add(String.copyValueOf(input));
+    }
+    dfs(n, 0, board, ret);
+    return ret;
+}
+
+public void dfs(int n, int line, ArrayList<String> board, List<List<String>> ret){
+    for (int i = 0; i<n; i++){
+        char[] input = new char[n];
+        Arrays.fill(input, '.');
+        input[i] = 'Q';
+        board.set(line, String.copyValueOf(input));
+        if (validate(line, board)) {
+            if (line == n - 1)
+                ret.add(new LinkedList<>(board));
+        else if (line<n - 1) 
+            dfs(n, line+1, board, ret);
+        }
+        Arrays.fill(input, '.');
+        board.set(line, String.copyValueOf(input));
+    }
+}
+
+public boolean validate(int line, List<String> board){
+    int n = board.get(line).indexOf('Q');
+    for (int i = 0; i<line; i++) {
+        int m = board.get(i).indexOf('Q');
+        if (m == n || m == n + line - i || m == n - (line - i)) return false;
+    }
+    return true;
+}
+~~~~
+####22. Generate Parentheses
+Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+
+把思考过程理解成一个完全二叉树，每向左走一格为加个左括号，向右走一格为加个右括号。深度优先回溯搜索即可（其实任何形式的搜索都可以）。
+~~~~
+public List<String> generateParenthesis(int n) {
+    ArrayList<String> result = new ArrayList<String>();
+    dfs(result, "", n, n);
+    return result;
+}
+
+public void dfs(ArrayList<String> result, String s, int left, int right){
+    if(left > right) return;
+    if(left == 0 && right == 0){
+        result.add(s);
+        return;
+    }
+    if(left>0) dfs(result, s+"(", left - 1, right);
+    if(right>0) dfs(result, s+")", left, right - 1);
+}
+~~~~
+
+###2. Combinatorics
+组合问题略微烧脑，高中学的排列组合在这里会派上用场
+####31. Next Permutation
+Implement next permutation, which rearranges numbers into the lexicographically next greater permutation of numbers. If such arrangement is not possible, it must rearrange it as the lowest possible order (ie, sorted in ascending order). The replacement must be inplace, do not allocate extra memory.
+
+这个题目需要理解排列的性质，找到一个最长的从头递增序列，把序列中倒数第二个数字替换成从右至左的第一个大于它的数字，然后把这个数字右侧的序列排序即可。
+
+~~~~
+public void nextPermutation(int[] nums) {
+    int l = nums.length;
+    if (l<2) return;
+    int i;
+    boolean perm = false;
+    for (i = l - 2; i>=0; i--)
+    if (nums[i]<nums[i+1]) {
+        perm = true;
+        break;
+    }
+    if (!perm) Arrays.sort(nums);
+    else {
+        int temp = nums[i], j;
+        for (j = l - 1; j>=0; j--)
+        if (nums[j]>temp)
+            break;
+        nums[i] = nums[j];
+        nums[j] = temp;
+        int[] ret2 = Arrays.copyOfRange(nums, i+1, l);
+        Arrays.sort(ret2);
+        for (j = i+1; j<l; j++)
+            nums[j] = ret2[j - i - 1];
+    }
+}
+~~~~
+
+####31. Next Permutation
+The gray code is a binary numeral system where two successive values differ in only one bit. Given a nonnegative integer n representing the total number of bits in the code, print the sequence of gray code. A gray code sequence must begin with 0.
+
+这题目简直是脑筋急转弯，可以分成两段理解，首位是0的如何变化，那么首位是1的数字要想每一位变动只相差1个数字，那就只能按照首位0的序列倒序过来。
+~~~~
+public List<Integer> grayCode(int n) {
+    List<Integer> ret = new ArrayList<>();
+    if (n == 0){
+        ret.add(0);
+        return ret;
+    } else {
+        List<Integer> last = grayCode(n - 1);
+        for (int i = last.size() - 1; i>=0; i--)
+        last.add(last.get(i) + (1<<(n-1)));
+        return last;
+    }
+}
+~~~~
 ##Hash Table
 ####1. Two Sum
 Given an array of integers, return indices of the two numbers such that they add up to a specific target. You may assume that each input would have exactly one solution.
@@ -477,6 +619,59 @@ public static int trap(int[] height) {
 ~~~~
 
 ##Matrix
+####48. Rotate Image
+You are given an n x n 2D matrix representing an image. Rotate the image by 90 degrees (clockwise).
+
+顺时针旋转90度=逆时针转90度再水平翻转；逆时针转90度就是求转置矩阵
+~~~~
+public void rotate(int[][] matrix) {
+    for (int i = 0; i<matrix.length; i++)
+        for (int j = i; j<matrix[i].length; j++){
+            int temp = matrix[i][j];
+            matrix[i][j] = matrix[j][i];
+            matrix[j][i] = temp;
+        }
+    for (int i = 0; i<matrix.length; i++){
+        for (int j = 0; j<matrix[i].length/2; j++){
+            int temp = matrix[i][j];
+            matrix[i][j] = matrix[i][matrix.length - 1 - j];
+            matrix[i][matrix.length - 1 - j] = temp;
+        }
+    }
+}
+~~~~
+####54. Spiral Matrix
+Given a matrix of m x n elements (m rows, n columns), return all elements of the matrix in spiral order.
+
+这个题不要想太深，维持四个变量记录接下来的最大行数和列数，然后按顺序每计数完一行（列）就更新这四个变量即可。
+~~~~
+public List<Integer> spiralOrder(int[][] matrix) {
+    List<Integer> res = new ArrayList<Integer>();
+    if (matrix.length == 0)
+        return res;
+    int rowBegin = 0;
+    int rowEnd = matrix.length-1;
+    int colBegin = 0;
+    int colEnd = matrix[0].length - 1;
+    while (rowBegin <= rowEnd && colBegin <= colEnd) {
+        for (int j = colBegin; j <= colEnd; j ++)
+            res.add(matrix[rowBegin][j]);
+        rowBegin++;
+        for (int j = rowBegin; j <= rowEnd; j ++)
+            res.add(matrix[j][colEnd]);
+        colEnd--;
+        if (rowBegin <= rowEnd)
+            for (int j = colEnd; j >= colBegin; j --)
+                res.add(matrix[rowEnd][j]);
+        rowEnd--;
+        if (colBegin <= colEnd)
+            for (int j = rowEnd; j >= rowBegin; j --) 
+                res.add(matrix[j][colBegin]);
+        colBegin++;
+    }
+    return res;
+}
+~~~~
 
 ##Greedy
 
@@ -495,9 +690,6 @@ public static int trap(int[] height) {
 ####Dijkstra & Bellman-Ford
 
 ####Prim & Kruskal
-
-##DFS & BFS
-leetcode四大陈腔滥调：回溯搜索、动态规划、双指针，二分法之首的回溯搜索
 
 ##String
 ####Palindrome
