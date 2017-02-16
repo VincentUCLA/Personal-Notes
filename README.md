@@ -622,7 +622,7 @@ public static int trap(int[] height) {
 ####48. Rotate Image
 You are given an n x n 2D matrix representing an image. Rotate the image by 90 degrees (clockwise).
 
-顺时针旋转90度=逆时针转90度再水平翻转；逆时针转90度就是求转置矩阵
+顺时针旋转90度 = 逆时针转90度再水平翻转；逆时针转90度就是求转置矩阵
 ~~~~
 public void rotate(int[][] matrix) {
     for (int i = 0; i<matrix.length; i++)
@@ -678,6 +678,7 @@ public List<Integer> spiralOrder(int[][] matrix) {
 ##Heap
 
 ##Dynamic Programming
+动态规划看书也看不懂，反正书上也是用例子来讲解，还不如实际做两道题就领悟的快。动态规划既可以理解成带记忆的递归，也可以理解成数学归纳法。
 ####62. Unique Paths
 A robot is located at the top-left corner of a m x n grid. The robot can only move either down or right at any point in time. The robot is trying to reach the bottom-right corner of the grid. How many possible unique paths are there? Note: m and n will be at most 100.
 
