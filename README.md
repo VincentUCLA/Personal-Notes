@@ -436,7 +436,7 @@ public void nextPermutation(int[] nums) {
 }
 ~~~~
 
-####31. Next Permutation
+####89. Gray Code
 The gray code is a binary numeral system where two successive values differ in only one bit. Given a nonnegative integer n representing the total number of bits in the code, print the sequence of gray code. A gray code sequence must begin with 0.
 
 这题目简直是脑筋急转弯，可以分成两段理解，首位是0的如何变化，那么首位是1的数字要想每一位变动只相差1个数字，那就只能按照首位0的序列倒序过来。
@@ -678,6 +678,95 @@ public List<Integer> spiralOrder(int[][] matrix) {
 ##Heap
 
 ##Dynamic Programming
+####62. Unique Paths
+A robot is located at the top-left corner of a m x n grid. The robot can only move either down or right at any point in time. The robot is trying to reach the bottom-right corner of the grid. How many possible unique paths are there? Note: m and n will be at most 100.
+
+Solution: 这个题目是二维动态规划的“母题”，很简单，想清楚2*2的情况就可以做出来。
+
+ps: 高中讲数学归纳法的意义就在这了，动态规划的思想跟数学归纳法很相似，只需要证明两个情况下（0->1, x->x+1）状态转移方程成立即可。
+~~~~
+public int uniquePaths(int m, int n) {
+    int[][] dp = new int[m][n];
+    for (int i = 0; i<m; i++)
+        dp[i][0] = 1;
+    for (int i = 0; i<n; i++)
+        dp[0][i] = 1;
+    for (int i = 1; i<m; i++)
+        for (int j = 1; j<n; j++)
+            dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+    return dp[m - 1][n - 1];
+}
+~~~~
+####1. Two Sum
+Implement regular expression matching with support for '.' and '*'.
+
+'.' Matches any single character.
+
+'*' Matches zero or more of the preceding element.
+
+The matching should cover the entire input string (not partial).
+
+使用动态规划。字符串为s，正则表达式为p。
+
+预处理：用dp[i][j]表示s串的前i个字符和p串的前j个字符是否匹配。dp[0][0] = true；
+
+如果p[i]为'*'，则dp[0][i] 需要p一直为'*'才为真
+1. 如果s[i] == p[j]或p[j] == '.'，dp[i+1][j+1] = dp[i][j]；
+2. 如果p[j] == '*'
+    1. 如果s[i] == p[j-1] 或p[j1] == '.'，dp[i+1][j+1]取下列三者的或
+        1. dp[i][j+1] （a*代表多个a）
+        2. dp[i+1][j] （a*代表一个a）
+        3. dp[i+1][j-1] （a*不代表a）
+    2. 否则的话dp[i+1][j+1] = dp[i+1][j1]
+~~~~
+public boolean isMatch(String s, String p) {
+    if (s == null || p == null)
+        return false;
+    boolean [][] dp = new boolean[s.length()+1][p.length()+1];
+    dp[0][0] = true;
+    for (int i = 0; i<p.length(); i++)
+        if (p.charAt(i) == '*' && dp[0][i - 1])
+    dp[0][i + 1] = true;
+    for (int i = 0; i<s.length(); i++)
+        for (int j = 0; j<p.length(); j++){
+            if (s.charAt(i) == p.charAt(j) || p.charAt(j) == '.')
+                dp[i+1][j+1] = dp[i][j];
+            else if (p.charAt(j) == '*') {
+                if (s.charAt(i) == p.charAt(j-1) || p.charAt(j-1) == '.')
+                    dp[i+1][j+1] = dp[i+1][j-1] || dp[i+1][j] || dp[i][j+1];
+                else
+                    dp[i+1][j+1] = dp[i+1][j-1];
+            }
+        }
+    return dp[s.length()][p.length()];
+}
+~~~~
+####44. Wildcard Matching
+Implement wildcard pattern matching with support for '?' and '*'.
+
+'?' Matches any single character.
+
+'*' Matches any sequence of characters (including the empty sequence).
+
+The matching should cover the entire input string (not partial).
+
+这题和第10题几乎完全一样，只是关键字略有不同
+~~~~
+public boolean isMatch(String s, String p) {
+    boolean[][] dp = new boolean[s.length()+1][p.length()+1];
+    dp[0][0] = true;
+    for (int i = 1; i <= p.length(); i++)
+        dp[0][i] = p.charAt(i-1) == '*' && dp[0][i-1];
+    for (int i = 0; i<s.length(); i++)
+        for (int j = 0; j<p.length(); j++){
+            if (s.charAt(i) == p.charAt(j) || p.charAt(j) == '?')
+                dp[i+1][j+1] = dp[i][j];
+            else if (p.charAt(j) == '*')
+                dp[i+1][j+1] = dp[i+1][j] || dp[i][j+1];
+        }
+    return dp[s.length()][p.length()];
+}
+~~~~
 
 ##Graph
 
@@ -692,10 +781,6 @@ public List<Integer> spiralOrder(int[][] matrix) {
 ####Prim & Kruskal
 
 ##String
-####Palindrome
-
-####Anagram
-
 ####StringBuffer
 
 ####KMP Algorithm
@@ -705,7 +790,13 @@ public List<Integer> spiralOrder(int[][] matrix) {
 ##Bit manipulation
 
 ##Misc
-####1. Two Sum
+####8. String to Integer (atoi)
+1. 用trim()函数删除左右的空格，如果剩余字符串为空则返回0；
+2. 处理首位的正负号；
+3. 处理数字，一旦遇到非数字字符则退出循环，处理溢出。
 
+####65. Valid Number
+这题目纠结各种情况就是自讨苦吃，本质仅仅是一道正则表达式练习题。还有人用自动机做，我只想说真的是吃饱了撑的……
 ~~~~
+"[‐+]?(([0‐9]+(.[0‐9]*)?)|.[0‐9]+)(e[‐+]?[0‐9]+)?"
 ~~~~
