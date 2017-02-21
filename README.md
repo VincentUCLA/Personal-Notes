@@ -84,7 +84,6 @@ def eval(self, str):
             stk.append(self.cal(i, opte1, opte2))
     return stk.pop()
 ~~~~
-
 ##Sorting
 选择排序最好理解，每次迭代都从子数组里寻找最小值即可，第k次迭代抽出来的即是第k小值
 
@@ -239,7 +238,24 @@ public double findKth(int[] nums1, int[] nums2, int k){
     }
 }
 ~~~~
+##Tree
+树是最简单的数据结构，主要是因为一般不会用迭代来处理树的内容，只有递归的话比较好想
+####111. Minimum Depth of Binary Tree
+Given a binary tree, find its minimum depth. The minimum depth is the number of nodes along the shortest path from the root node down to the nearest leaf node.
 
+这个题目的陷阱在于如果一个节点只有一侧有儿子，你是不能返回min(left, right)的，因为此时有一侧返回值是0
+
+~~~~
+public int minDepth(TreeNode root) {
+    if (root == null) return 0;
+    int left = minDepth(root.left);
+    int right = minDepth(root.right);
+    if (left == 0 || right == 0)
+        return left + right + 1;
+    else 
+        return Math.min(left, right) + 1;
+}
+~~~~
 ##Binary Search
 二分搜索的思想是很简单的，但一次性写对也不容易：
 
@@ -476,47 +492,6 @@ public int[] twoSum(int[] nums, int target) {
         }
     }
     return new int[]{0, 0};
-}
-~~~~
-
-##Linked List
-####2. Add Two Numbers
-Input: (2 > 4 > 3) + (5 > 6 > 4)
-
-Output: 7 > 0 > 8
-
-这个题目的难点在于corner case多而且庞杂，但实际上不需要转换成十进制数字，因为他本身提供的链表就是从小到大的，符合加法的计算习惯，生加即可
-~~~~
-public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-    ListNode dummy = new ListNode(0);
-    ListNode cur = dummy;
-    int c = 0;
-    while (l1 != null || l2 != null){
-        int a = 0, b = 0, d = 0;
-        if (l1 != null) {
-            a = l1.val;
-            l1 = l1.next;
-        }
-        if (l2 != null) {
-            b = l2.val;
-            l2 = l2.next;
-        }
-        if (a + b + c >= 10) {
-            d = (a + b + c) % 10;
-            c = 1;
-        } else {
-            d = a + b + c;
-            c = 0;
-        }
-        cur.next = new ListNode(d);
-        cur = cur.next;
-    }
-    if (c != 0) {
-        cur.next = new ListNode(c);
-        cur = cur.next;
-    }
-    cur.next = null;
-    return dummy.next;
 }
 ~~~~
 
