@@ -5,7 +5,7 @@
 Given a sorted array, remove the duplicates in place such that each element appear only once and return the new length.
 Do not allocate extra space for another array, you must do this in place with constant memory.
 
-本题目是双指针类型题目的“母题”，所有本类型题目都是从本题变化而来。很简单，维持两个指针，都在每次填数字时++，但后面那个指针在每次遇到重复数字时++。
+很简单，维持两个指针，都在每次填数字时++，但后面那个指针在每次遇到重复数字时++。
 ~~~~
 public int removeDuplicates(int[] nums) {
     int i = 1, j = 1;
@@ -17,10 +17,11 @@ public int removeDuplicates(int[] nums) {
 }
 ~~~~
 ###2. 双指针窗口操作
+双指针配合哈希表是字符串操作里极为陈腔滥调的题目，需要深入掌握
 ####3. Longest Substring Without Repeating Characters
 Given a string, find the length of the longest substring without repeating characters.
 
-双指针开头i结尾j指代当前字符串，如果哈希表里包含j则删除表中i项并i++，否则添加表中j项并j++
+本题是双指针窗口操作的母题，双指针开头i结尾j指代当前字符串，如果哈希表里包含j则删除表中i项并i++，否则添加表中j项并j++
 ~~~~
 public int lengthOfLongestSubstring(String s) {     
     int i = 0, j = 0, max = 0;
