@@ -24,16 +24,17 @@ Given a string, find the length of the longest substring without repeating chara
 本题是双指针窗口操作的母题，双指针开头i结尾j指代当前字符串，如果哈希表里包含j则删除表中i项并i++，否则添加表中j项并j++
 ~~~~
 public int lengthOfLongestSubstring(String s) {     
-    int i = 0, j = 0, max = 0;
-    HashSet<Character> set = new HashSet<Character>();
-    while (j < s.length()){
-        if (!set.contains(s.charAt(j))){
-            set.add(s.charAt(j));
-            j++;
-            max = Math.max(max, j - i);
+    int left = 0, right = 0, max = 0;
+    int[] hash = new int[26];
+    char[] cs = s.toCharArray();
+    while (right < cs.length){
+        if (hash[cs[right] - 'a'] == 0) {
+            hash[cs[right] - 'a']++;
+            right++;
+            max = Math.max(max, right - left);
         } else {
-            set.remove(s.charAt(i));
-            i++;
+            hash[cs[left] - 'a']--;
+            left++;
         }
     }
     return max;
@@ -66,6 +67,28 @@ public boolean isPalindrome(String s, int begin, int end){
     return true;
 }
 ~~~~
+
+####438. Find All Anagrams in a String
+Given a string s and a non-empty string p, find all the start indices of p anagrams in s.
+
+双指针+哈希表经典题目，我个人对leetcode上广泛流传的答案做了一个细节处的修改以更容易理解：既然哈希表里右指针所指代的字符大于等于1指代这个字符曾经在p中出现过，那么左指针指代的字符在哈希表里加回去之后大于等于1，也能代表这个字符曾经在p中出现过，否则的话左指针怎么加，右指针也都是减过的，最大不可能超过0。理解了这个机制就能破解掉大部分的双指针+哈希表题目。
+~~~~
+public List<Integer> findAnagrams(String s, String p) {
+    List<Integer> ret = new ArrayList<>();
+    char[] cs = s.toCharArray(), cp = p.toCharArray();
+    int[] hash = new int[26];
+    for (int i = 0; i<cp.length; i++)
+        hash[cp[i] - 'a']++;
+    int left = 0, right = 0, need = cp.length;
+    while (right < cs.length){
+        if (hash[cs[right++] - 'a']-- >= 1) need--;
+        if (need == 0) ret.add(left);
+        if (right - left == cp.length && ++hash[cs[left++] - 'a'] >= 1) need++;
+    }
+    return ret;
+}
+~~~~
+
 ###3. 双指针夹逼操作
 ####11. Container With Most Water
 Given n nonnegative integers a1, a2, ..., an, where each represents a point at coordinate (i, ai). n vertical lines are drawn such that the two endpoints of line i is at (i, ai) and (i, 0). Find two lines, which together with x=axis forms a container,
