@@ -2,7 +2,7 @@
 
 ###1. 各种反转链表
 ####206. Reverse Linked List
-反转链表母题，需要熟练掌握各种变量的变化顺序，为了反转一个链表需要至少追踪两个变量
+反转链表母题，需要熟练掌握各种变量的变化顺序，追踪两个变量法
 ~~~~
 public ListNode reverseList(ListNode head) {
     ListNode newHead = null;
@@ -13,6 +13,45 @@ public ListNode reverseList(ListNode head) {
         head = headNext;
     }
     return newHead;
+}
+~~~~
+####92. Reverse Linked List II
+反转链表有很多种方式，上一题只是其中一种，这次我们来试试第二种，实际只追踪一个变量
+~~~~
+public ListNode reverseBetween(ListNode head, int m, int n) {
+    ListNode dummy = new ListNode(0);
+    dummy.next = head;
+    ListNode startL = dummy;
+    for (int i = 0; i<m-1; i++)
+        startL = startL.next;
+    ListNode cur = startL.next;
+    for (int i = m; i<n; i++){
+        ListNode curNext = cur.next;
+        cur.next = curNext.next;
+        curNext.next = startL.next;
+        startL.next = curNext;
+    }
+    return dummy.next;
+}
+~~~~
+####24. Swap Nodes in Pairs
+简单题，注意顺序即可
+~~~~
+public ListNode swapPairs(ListNode head) {
+    ListNode dummy = new ListNode(0);
+    dummy.next = head;
+    ListNode prev = dummy;
+    ListNode cur;
+    ListNode move;
+    while (prev.next != null && prev.next.next != null){
+        cur = prev.next;
+        move = cur.next;
+        prev.next = move;
+        cur.next = move.next;
+        move.next = cur;
+        prev = cur;
+    }
+    return dummy.next;
 }
 ~~~~
 ###2. 其他杂题
