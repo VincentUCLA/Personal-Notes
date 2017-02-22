@@ -1,4 +1,21 @@
 ##Linked List
+
+###1. 各种反转链表
+####206. Reverse Linked List
+反转链表母题，需要熟练掌握各种变量的变化顺序，为了反转一个链表需要至少追踪两个变量
+~~~~
+public ListNode reverseList(ListNode head) {
+    ListNode newHead = null;
+    while (head != null){
+        ListNode headNext = head.next;
+        head.next = newHead;
+        newHead = head;
+        head = headNext;
+    }
+    return newHead;
+}
+~~~~
+###2. 其他杂题
 ####2. Add Two Numbers
 Input: (2 > 4 > 3) + (5 > 6 > 4)
 
