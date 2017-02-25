@@ -136,3 +136,50 @@ public ListNode mergeKLists(ListNode[] lists) {
         return mergeTwoLists(mergeKLists(l1), mergeKLists(l2));
     }
 }
+
+####147. Insertion Sort List
+这题还真不是一个简单题，需要注意的就是如果插入位置后面的最小值就是插入位置本身的话，就不需要再移动
+~~~~
+def insertionSortList(self, head):
+    dummy = ListNode(0)
+    dummy.next = head
+    inscur = dummy;
+    while inscur.next != None:
+        min = 2**32
+        cur = inscur
+        tempNode = None
+        while cur.next != None:
+            if cur.next.val < min:
+                min = cur.next.val
+                tempNode = cur
+            cur = cur.next
+        if tempNode != inscur:
+            temp = tempNode.next.next
+            tempNode.next.next = inscur.next
+            inscur.next = tempNode.next
+            tempNode.next = temp
+        inscur = inscur.next
+    return dummy.next
+~~~~
+####148. Sort List
+这题反而不难。。。注意细节
+~~~~
+def sortList(self, head):
+    """
+    :type head: ListNode
+    :rtype: ListNode
+    """
+    if head == None or head.next == None:
+        return head
+    slow = head
+    fast = head
+    while fast.next != None and fast.next.next != None:
+        slow = slow.next
+        fast = fast.next.next
+    a = head
+    b = slow.next
+    slow.next = None
+    a = self.sortList(a)
+    b = self.sortList(b)
+    return self.mergeTwoLists(a, b)
+~~~~
