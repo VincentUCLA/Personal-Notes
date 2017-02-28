@@ -1,0 +1,70 @@
+
+##Tree & Binary Search
+###1. Tree
+树是最简单的数据结构，主要是因为一般不会用迭代来处理树的内容，只有递归的话比较好想
+####111. Minimum Depth of Binary Tree
+Given a binary tree, find its minimum depth. The minimum depth is the number of nodes along the shortest path from the root node down to the nearest leaf node.
+
+这个题目的陷阱在于如果一个节点只有一侧有儿子，你是不能返回min(left, right)的，因为此时有一侧返回值是0
+
+~~~~
+public int minDepth(TreeNode root) {
+    if (root == null) return 0;
+    int left = minDepth(root.left);
+    int right = minDepth(root.right);
+    if (left == 0 || right == 0)
+        return left + right + 1;
+    else 
+        return Math.min(left, right) + 1;
+}
+~~~~
+###2. Binary Search
+二分搜索的思想是很简单的，但一次性写对也不容易：
+
+~~~~
+def binarysearch(self, arr, k):
+    m = len(arr) // 2
+    if k == arr[m]:
+        return arr[m]
+    elif k > arr[m]:
+        return self.binarysearch(arr[m:], k)
+    else:
+        return self.binarysearch(arr[0:m], k)
+~~~~
+
+另外不要拘泥于python提供的简单写法：
+
+~~~~
+def binarysearch(self, arr, k, lo, hi):
+    m = (lo + hi) // 2
+    if k == arr[m]:
+        return arr[m]
+    elif k < arr[m]:
+        return self.binarysearch(arr, k, lo, m)
+    else:
+        return self.binarysearch(arr, k, m + 1, hi)
+~~~~
+
+####35. Search Insert Position
+Given a sorted array and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order. You may assume no duplicates in the array.
+
+本题几乎是二分搜索的“母题”，需要熟练掌握；由于他不会给一个超大的数组，不需要考虑溢出问题
+~~~~
+public static int searchInsert(int[] nums, int target) {
+    if (nums == null)
+        return - 1;
+    int i = 0;
+    int j = nums.length;
+    if (target > nums[nums.length - 1]) return nums.length;
+    else {
+        while (i < j) {
+            int m = (i + j) / 2;
+            if (target > nums[m])
+                i = m + 1;
+            else
+                j = m;
+        }
+    }
+    return j;
+}
+~~~~
