@@ -65,7 +65,37 @@ public void dfs(ArrayList<String> result, String s, int left, int right){
     if(right>0) dfs(result, s+")", left, right - 1);
 }
 ~~~~
+####47. Permutations II
+这个题目的剪枝很有趣，为了恰当剪枝需要事先排序，然后比如说有三连出现的数字，它只能以1, 11, 111形式各出现一次。比如说[1,1,1,2]，当bfs完两个1之后，遇到第三个1需要跳过，为什么呢？因为递归[1,1]子树时已经搜索过[1,1,1]了。所以每一个子树（在这个例子中是[1]子树的第二位搜索的时候看到第三个1需要跳过，因为之前第二个1已经被跳过了，符合(nums[i - 1] == nums[i] and not used[i - 1])的条件)——这一轮的i-1个值没用过，说明上一轮搜索的时候已经用过了。
+~~~~
+def perm(self, nums, current, result, used):
+    if len(current) == len(nums):
+        result.append(current[:])
+        return
+    else:
+        for i in range(0, len(nums)):
+            if used[i]:
+                continue
+            if i > 0 and nums[i - 1] == nums[i] and not used[i - 1]:
+                continue
+            used[i] = True
+            current.append(nums[i])
+            self.perm(nums, current, result, used)
+            current.pop()
+            used[i] = False
 
+def permuteUnique(self, nums):
+    """
+    :type nums: List[int]
+    :rtype: List[List[int]]
+    """
+    [ret, cur, used] = [[], [], []]
+    nums = sorted(nums)
+    for i in nums:
+        used.append(False)
+    self.perm(nums, cur, ret, used)
+    return ret
+~~~~
 ###2. Combinatorics
 组合问题略微烧脑，高中学的排列组合在这里会派上用场
 ####31. Next Permutation
