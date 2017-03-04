@@ -90,3 +90,18 @@ public boolean isMatch(String s, String p) {
     return dp[s.length()][p.length()];
 }
 ~~~~
+####152. Maximum Product Subarray
+不管你信不信，此题不是双指针而是dp，姊妹题53. Maximum Subarray，这两题是有一定区别的
+~~~~
+def maxProduct(self, nums):
+    if nums is None:
+        return 0
+    [maxherepre, minherepre, maxsofar] = [nums[0], nums[0], nums[0]]
+    for i in range(1, len(nums)):
+        maxhere = max(maxherepre * nums[i], minherepre * nums[i], nums[i]);
+        minhere = min(maxherepre * nums[i], minherepre * nums[i], nums[i]);
+        maxsofar = max(maxhere, maxsofar);
+        maxherepre = maxhere;
+        minherepre = minhere;
+    return maxsofar
+~~~~
