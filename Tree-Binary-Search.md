@@ -45,26 +45,24 @@ def binarysearch(self, arr, k, lo, hi):
         return self.binarysearch(arr, k, m + 1, hi)
 ~~~~
 
-####35. Search Insert Position
-Given a sorted array and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order. You may assume no duplicates in the array.
-
-本题几乎是二分搜索的“母题”，需要熟练掌握；由于他不会给一个超大的数组，不需要考虑溢出问题
+####154. Find Minimum in Rotated Sorted Array II
+这个题和153基本一样，简单的二分搜索，唯一的问题是如果两侧一样的话怎么办呢？153题不含重复值，含重复值的154题，去掉重复值不就跟153一样了吗
 ~~~~
-public static int searchInsert(int[] nums, int target) {
-    if (nums == null)
-        return - 1;
-    int i = 0;
-    int j = nums.length;
-    if (target > nums[nums.length - 1]) return nums.length;
-    else {
-        while (i < j) {
-            int m = (i + j) / 2;
-            if (target > nums[m])
-                i = m + 1;
-            else
-                j = m;
-        }
-    }
-    return j;
-}
+class Solution(object):
+    def findMin(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        l = len(nums)
+        if l < 1:
+            return 0
+        elif l == 1:
+            return nums[0]
+        elif nums[0] < nums[l-1]:
+            return nums[0]
+        elif nums[0] > nums[l-1]:
+            return min(self.findMin(nums[0:l//2]), self.findMin(nums[l//2:]))
+        else:
+            return self.findMin(nums[1:])
 ~~~~
