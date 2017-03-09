@@ -420,3 +420,25 @@ def countPrimes(self, n):
             primes[i*i:n:i] = [False] * len(primes[i*i:n:i])
     return sum(primes)
 ~~~~
+####241. Different Ways to Add Parentheses
+这题目看代码就好，讲解也讲不明白……实际上是个简单的分治
+~~~~
+def diffWaysToCompute(self, input):
+    res = []
+    for i in range(0, len(input)):
+        c = input[i]
+        if c == '+' or c == '-' or c == '*':
+            a, b = input[0:i], input[i+1:]
+            al, bl = self.diffWaysToCompute(a), self.diffWaysToCompute(b)
+            for x in al:
+                for y in bl:
+                    if c == '-':
+                        res.append(x-y)
+                    elif c == '+':
+                        res.append(x+y)
+                    elif c == '*':
+                        res.append(x*y)
+    if len(res) == 0:
+        res.append(int(input))
+    return res
+~~~~
