@@ -396,3 +396,27 @@ public List<Integer> spiralOrder(int[][] matrix) {
 ~~~~
 "[‐+]?(([0‐9]+(.[0‐9]*)?)|.[0‐9]+)(e[‐+]?[0‐9]+)?"
 ~~~~
+
+####179. Largest Number
+这题的逻辑很浅显，然而限于我python力太弱，python3取消cmp之后的语法我也不会写……
+
+这题的逻辑就是按照两个字串连接之后的数字大小来排序，不难
+~~~~
+def largestNumber(self, num):
+    num = [str(x) for x in num]
+    num.sort(cmp=lambda x, y: cmp(y+x, x+y))
+    return ''.join(num).lstrip('0') or '0'
+~~~~
+
+####204. Count Primes
+埃拉托斯特尼筛法，不难，但这个例程可以学到不少python奇形怪状的语法
+~~~~
+def countPrimes(self, n):
+    if n < 3: return 0
+    primes = [True] * n
+    primes[0] = primes[1] = False
+    for i in range(2, int(n ** 0.5) + 1):
+        if primes[i]:
+            primes[i*i:n:i] = [False] * len(primes[i*i:n:i])
+    return sum(primes)
+~~~~
