@@ -39,18 +39,3 @@ class Solution:
 终于到了通用方法，本科一年级数字电路
 ####137. Single Number II
 这个题目要求在一群出现过3次的数字里找唯一一个只出现过1次的，可以理解成一个状态机，3个状态的话，00->01->10->00，很容易画出来K-map，求出来两个状态机方程，a = (a^b) & (a^c); b = (b^c) & ~a，后面就不用写了。。。
-
-###5. 面向对象编程
-####179. Largest Number
-这题的逻辑很浅显，然而限于我python力太弱，python3取消cmp之后的语法我也不会写……
-
-这题的逻辑就是按照两个字串连接之后的数字大小来排序，不难
-~~~~
-class Solution:
-    # @param num, a list of integers
-    # @return a string
-    def largestNumber(self, num):
-        num = [str(x) for x in num]
-        num.sort(cmp=lambda x, y: cmp(y+x, x+y))
-        return ''.join(num).lstrip('0') or '0'
-~~~~
