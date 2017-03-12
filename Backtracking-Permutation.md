@@ -148,3 +148,42 @@ public List<Integer> grayCode(int n) {
     }
 }
 ~~~~
+###3. Breadth-First Search
+BFS思考起来比DFS要简单很多，而且对于很多问题是秒杀……尤其走迷宫BFS一般比较好写
+####210 \& 211. Course Schedule I \& II
+这题目虽然是拓扑排序，BFS秒杀，然而仍然要注意，正向BFS是不如逆向BFS的，因为这题目的实质是寻找图里的环，含环图可以有个开端，但一定没有结尾
+~~~~
+def canFinish(self, numCourses, prerequisites):
+    """
+    :type numCourses: int
+    :type prerequisites: List[List[int]]
+    :rtype: bool
+    """
+    que, hashmap, deg, tot = [], {}, [0] * numCourses, 0
+    for i in prerequisites:
+        if i[0] not in hashmap:
+            hashmap[i[0]] = [i[1]]
+        else:
+            hashmap[i[0]].append(i[1])
+        deg[i[1]] += 1
+    for i in range(0, numCourses):
+        if deg[i] == 0:
+            que.append(i)
+            tot += 1
+    ret = []
+    print(deg)
+    while len(que) > 0:
+        cur, que = que[0], que[1:]
+        ret.append(cur)
+        if cur in hashmap:
+            for i in hashmap[cur]:
+                deg[i] -= 1
+                if deg[i] == 0:
+                    que.append(i)
+                    tot += 1
+    ret.reverse()
+    if tot == numCourses:
+        return ret
+    else:
+        return []
+~~~~
