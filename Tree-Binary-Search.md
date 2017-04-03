@@ -48,68 +48,65 @@ def binarysearch(self, arr, k, lo, hi):
 #### 154. Find Minimum in Rotated Sorted Array II
 这个题和153基本一样，简单的二分搜索，唯一的问题是如果两侧一样的话怎么办呢？153题不含重复值，含重复值的154题，去掉重复值不就跟153一样了吗
 ~~~~
-class Solution(object):
-    def findMin(self, nums):
-        """
-        :type nums: List[int]
-        :rtype: int
-        """
-        l = len(nums)
-        if l < 1:
-            return 0
-        elif l == 1:
-            return nums[0]
-        elif nums[0] < nums[l-1]:
-            return nums[0]
-        elif nums[0] > nums[l-1]:
-            return min(self.findMin(nums[0:l//2]), self.findMin(nums[l//2:]))
-        else:
-            return self.findMin(nums[1:])
+def findMin(self, nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+    l = len(nums)
+    if l < 1:
+        return 0
+    elif l == 1:
+        return nums[0]
+    elif nums[0] < nums[l-1]:
+        return nums[0]
+    elif nums[0] > nums[l-1]:
+        return min(self.findMin(nums[0:l//2]), self.findMin(nums[l//2:]))
+    else:
+        return self.findMin(nums[1:])
 ~~~~
 
 #### 162. Find Peak Element
 
 这个题目就是分情况讨论的二分搜索，如果找到了peak那当然好，找不到的话，增长趋势就向右找，下跌趋势就向左找，如果搜索范围只有一个那只能返回他，如果有两个就返回那个较大值，一共这是五种情况
 ~~~~
-class Solution(object):
-    def findPeakElement(self, nums):
-        """
-        :type nums: List[int]
-        :rtype: int
-        """
-        left, right = 0, len(nums) - 1
-        while True:
-            if left == right: return left
-            elif left + 1 == right:
-                if nums[left] > nums[right]: return left
-                else: return right
-            m = (left + right) // 2
-            if nums[m-1] < nums[m] and nums[m+1] < nums[m]:
-                return m
-            elif nums[m-1] > nums[m] > nums[m+1]:
-                right = m - 1
-            else:
-                left = m + 1
+def findPeakElement(self, nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+    left, right = 0, len(nums) - 1
+    while True:
+        if left == right: return left
+        elif left + 1 == right:
+            if nums[left] > nums[right]: return left
+            else: return right
+        m = (left + right) // 2
+        if nums[m-1] < nums[m] and nums[m+1] < nums[m]:
+            return m
+        elif nums[m-1] > nums[m] > nums[m+1]:
+            right = m - 1
+        else:
+            left = m + 1
 ~~~~
 
 
 #### 300. Longest Increasing Subsequence
 这个题目很不好想，表面上是dp，但实际上是二分搜索，从左向右便利整个数列，逐个插入dp数列，维持dp数列的从小到大顺序即可
 ~~~~
-class Solution(object):
-    def lengthOfLIS(self, nums):
-        """
-        :type nums: List[int]
-        :rtype: int
-        """
-        dp = []
-        for x in nums:
-            i = self.bs(dp, x)
-            if i < 0:
-                i = - (i + 1)
-            if i == len(dp):
-                dp.append(x)
-            else:
-                dp[i] = x
-        return len(dp)
+def lengthOfLIS(self, nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+    dp = []
+    for x in nums:
+        i = self.bs(dp, x)
+        if i < 0:
+            i = - (i + 1)
+        if i == len(dp):
+            dp.append(x)
+        else:
+            dp[i] = x
+    return len(dp)
 ~~~~
