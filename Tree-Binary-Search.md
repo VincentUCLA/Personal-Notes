@@ -1,8 +1,8 @@
 
-##Tree & Binary Search
-###1. Tree
+## Tree & Binary Search
+### 1. Tree
 树是最简单的数据结构，主要是因为一般不会用迭代来处理树的内容，只有递归的话比较好想
-####111. Minimum Depth of Binary Tree
+#### 111. Minimum Depth of Binary Tree
 Given a binary tree, find its minimum depth. The minimum depth is the number of nodes along the shortest path from the root node down to the nearest leaf node.
 
 这个题目的陷阱在于如果一个节点只有一侧有儿子，你是不能返回min(left, right)的，因为此时有一侧返回值是0
@@ -18,7 +18,7 @@ public int minDepth(TreeNode root) {
         return Math.min(left, right) + 1;
 }
 ~~~~
-###2. Binary Search
+### 2. Binary Search
 二分搜索的思想是很简单的，但一次性写对也不容易：
 
 ~~~~
@@ -45,7 +45,7 @@ def binarysearch(self, arr, k, lo, hi):
         return self.binarysearch(arr, k, m + 1, hi)
 ~~~~
 
-####154. Find Minimum in Rotated Sorted Array II
+#### 154. Find Minimum in Rotated Sorted Array II
 这个题和153基本一样，简单的二分搜索，唯一的问题是如果两侧一样的话怎么办呢？153题不含重复值，含重复值的154题，去掉重复值不就跟153一样了吗
 ~~~~
 class Solution(object):
