@@ -44,7 +44,7 @@ public boolean validate(int line, List<String> board){
     return true;
 }
 ~~~~
-####22. Generate Parentheses
+#### 22. Generate Parentheses
 Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
 
 把思考过程理解成一个完全二叉树，每向左走一格为加个左括号，向右走一格为加个右括号。深度优先回溯搜索即可（其实任何形式的搜索都可以）。
@@ -65,7 +65,7 @@ public void dfs(ArrayList<String> result, String s, int left, int right){
     if(right>0) dfs(result, s+")", left, right - 1);
 }
 ~~~~
-####47. Permutations II
+#### 47. Permutations II
 这个题目的剪枝很有趣，为了恰当剪枝需要事先排序，然后比如说有三连出现的数字，它只能以1, 11, 111形式各出现一次。比如说[1,1,1,2]，当bfs完两个1之后，遇到第三个1需要跳过，为什么呢？因为递归[1,1]子树时已经搜索过[1,1,1]了。所以每一个子树——在这个例子中是[1]子树的第二位搜索的时候看到第三个1需要跳过，因为之前第二个1已经被跳过了，符合(nums[i - 1] == nums[i] and not used[i - 1])的条件——这一轮的i-1个值没用过，说明上一轮搜索的时候已经用过了。39/40、78/90两组题目和46/47两道题用的是完全一样的技巧，不再赘述了。
 ~~~~
 def perm(self, nums, current, result, used):
@@ -96,9 +96,9 @@ def permuteUnique(self, nums):
     self.perm(nums, cur, ret, used)
     return ret
 ~~~~
-###2. Combinatorics
+### 2. Combinatorics
 组合问题略微烧脑，高中学的排列组合在这里会派上用场
-####31. Next Permutation
+#### 31. Next Permutation
 Implement next permutation, which rearranges numbers into the lexicographically next greater permutation of numbers. If such arrangement is not possible, it must rearrange it as the lowest possible order (ie, sorted in ascending order). The replacement must be inplace, do not allocate extra memory.
 
 这个题目需要理解排列的性质，找到一个最长的从头递增序列，把序列中倒数第二个数字替换成从右至左的第一个大于它的数字，然后把这个数字右侧的序列排序即可。
@@ -130,7 +130,7 @@ public void nextPermutation(int[] nums) {
 }
 ~~~~
 
-####89. Gray Code
+#### 89. Gray Code
 The gray code is a binary numeral system where two successive values differ in only one bit. Given a nonnegative integer n representing the total number of bits in the code, print the sequence of gray code. A gray code sequence must begin with 0.
 
 这题目简直是脑筋急转弯，可以分成两段理解，首位是0的如何变化，那么首位是1的数字要想每一位变动只相差1个数字，那就只能按照首位0的序列倒序过来。
@@ -148,9 +148,9 @@ public List<Integer> grayCode(int n) {
     }
 }
 ~~~~
-###3. Breadth-First Search
+### 3. Breadth-First Search
 BFS思考起来比DFS要简单很多，而且对于很多问题是秒杀……尤其走迷宫BFS一般比较好写
-####210 \& 211. Course Schedule I \& II
+#### 210 \& 211. Course Schedule I \& II
 这题目虽然是拓扑排序，BFS秒杀，然而仍然要注意，正向BFS是不如逆向BFS的，因为这题目的实质是寻找图里的环，含环图可以有个开端，但一定没有结尾
 ~~~~
 def canFinish(self, numCourses, prerequisites):
