@@ -66,3 +66,28 @@ class Solution(object):
         else:
             return self.findMin(nums[1:])
 ~~~~
+
+#### 162. Find Peak Element
+
+这个题目就是分情况讨论的二分搜索，如果找到了peak那当然好，找不到的话，增长趋势就向右找，下跌趋势就向左找，如果搜索范围只有一个那只能返回他，如果有两个就返回那个较大值，一共这是五种情况
+~~~~
+class Solution(object):
+    def findPeakElement(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        left, right = 0, len(nums) - 1
+        while True:
+            if left == right: return left
+            elif left + 1 == right:
+                if nums[left] > nums[right]: return left
+                else: return right
+            m = (left + right) // 2
+            if nums[m-1] < nums[m] and nums[m+1] < nums[m]:
+                return m
+            elif nums[m-1] > nums[m] > nums[m+1]:
+                right = m - 1
+            else:
+                left = m + 1
+~~~~
