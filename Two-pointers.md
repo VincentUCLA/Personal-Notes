@@ -1,7 +1,7 @@
-##Two pointers
+## Two pointers
 我已经不知道双指针跟回溯搜索相比哪个更陈腔滥调一点了，既然都这么陈腔滥调了，很显然这个思想是要透彻掌握的。
-###1. 双指针顺序操作
-####26. Remove Duplicates from Sorted Array
+### 1. 双指针顺序操作
+#### 26. Remove Duplicates from Sorted Array
 Given a sorted array, remove the duplicates in place such that each element appear only once and return the new length.
 Do not allocate extra space for another array, you must do this in place with constant memory.
 
@@ -16,9 +16,9 @@ public int removeDuplicates(int[] nums) {
     return i;
 }
 ~~~~
-###2. 双指针窗口操作
+### 2. 双指针窗口操作
 双指针配合哈希表是字符串操作里极为陈腔滥调的题目，需要深入掌握
-####3. Longest Substring Without Repeating Characters
+#### 3. Longest Substring Without Repeating Characters
 Given a string, find the length of the longest substring without repeating characters.
 
 本题是双指针窗口操作的母题，双指针开头i结尾j指代当前字符串，如果哈希表里包含j则删除表中i项并i++，否则添加表中j项并j++
@@ -40,7 +40,7 @@ public int lengthOfLongestSubstring(String s) {
     return max;
 }
 ~~~~
-####5. Longest Palindromic Substring
+#### 5. Longest Palindromic Substring
 Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.
 
 从头到尾i遍历字符串s，如果(i - l - 1, i)处为回文，则回文长度l+2；否则如果(i - l, i)处为回文，则回文长度l+1。
@@ -68,7 +68,7 @@ public boolean isPalindrome(String s, int begin, int end){
 }
 ~~~~
 
-####438. Find All Anagrams in a String
+#### 438. Find All Anagrams in a String
 Given a string s and a non-empty string p, find all the start indices of p anagrams in s.
 
 双指针+哈希表经典题目，我个人对leetcode上广泛流传的答案做了一个细节处的修改以更容易理解：既然哈希表里右指针所指代的字符大于等于1指代这个字符曾经在p中出现过，那么左指针指代的字符在哈希表里加回去之后大于等于1，也能代表这个字符曾经在p中出现过，否则的话左指针怎么加，右指针也都是减过的，最大不可能超过0。理解了这个机制就能破解掉大部分的双指针+哈希表题目。
@@ -89,8 +89,8 @@ public List<Integer> findAnagrams(String s, String p) {
 }
 ~~~~
 
-###3. 双指针夹逼操作
-####11. Container With Most Water
+### 3. 双指针夹逼操作
+#### 11. Container With Most Water
 Given n nonnegative integers a1, a2, ..., an, where each represents a point at coordinate (i, ai). n vertical lines are drawn such that the two endpoints of line i is at (i, ai) and (i, 0). Find two lines, which together with x=axis forms a container,
 such that the container contains the most water.
 
@@ -107,7 +107,7 @@ public static int maxArea(int[] height) {
     return maxArea;
 }
 ~~~~
-####42. Trapping Rain Water
+#### 42. Trapping Rain Water
 Given n nonnegative integers representing an elevation map where the width of each bar is 1, compute how much water it is able to trap after raining.
 
 双指针从左右向中间“夹逼”，以一个变量记录当前蓄水池的高度（初值为0），夹逼时每遇到一个小于此高度的边，则移动指针并加入水量，否则在本轮迭代结束时改变当前蓄水池的高度
