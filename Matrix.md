@@ -52,3 +52,41 @@ public List<Integer> spiralOrder(int[][] matrix) {
     return res;
 }
 ~~~~
+
+#### 498. Diagonal Traverse
+这个题目需要考虑清楚边界情况，靠边的时候一共是四种情况，不靠边反而只有两种
+~~~~
+def findDiagonalOrder(self, matrix):
+    """
+    :type matrix: List[List[int]]
+    :rtype: List[int]
+    """
+    direction, x, y = True, 0, 0
+    #True means upper-right, vice versa
+    if len(matrix) == 0:
+        return []
+    h, w = len(matrix), len(matrix[0])
+    ret = []
+    while x < w and y < h:
+        ret.append(matrix[y][x])
+        if y == 0 and direction == True and x != w - 1:
+            x += 1
+            direction = False
+        elif x == 0 and direction == False and y != h - 1:
+            y += 1
+            direction = True
+        elif x == w - 1 and direction == True:
+            y += 1
+            direction = False
+        elif y == h - 1 and direction == False:
+            x += 1
+            direction = True
+        else:
+            if direction:
+                x += 1
+                y -= 1
+            else:
+                x -= 1
+                y += 1
+    return ret
+~~~~
