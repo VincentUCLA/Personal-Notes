@@ -105,4 +105,30 @@ def maxProduct(self, nums):
         minherepre = minhere;
     return maxsofar
 ~~~~
+
+####494. Target Sum
+
+这题目看图就懂了……
 ![alt text](https://leetcode.com/uploads/files/1485048726667-screen-shot-2017-01-21-at-8.31.48-pm.jpg "DP 1")
+
+~~~~
+def findTargetSumWays(self, nums, S):
+    """
+    :type nums: List[int]
+    :type S: int
+    :rtype: int
+    """
+    sumN = 0
+    for i in nums: sumN += i
+    if S > sumN or S < -sumN: return 0
+    dp = [0] * (2 * sumN + 1)
+    dp[sumN] = 1
+    for i in nums:
+        nextdp = [0] * (2 * sumN + 1)
+        for j in range(0, len(dp)):
+            if dp[j] != 0:
+                nextdp[j + i] += dp[j]
+                nextdp[j - i] += dp[j]
+        dp = nextdp
+    return dp[sumN + S]
+~~~~
