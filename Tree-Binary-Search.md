@@ -91,3 +91,25 @@ class Solution(object):
             else:
                 left = m + 1
 ~~~~
+
+
+#### 300. Longest Increasing Subsequence
+这个题目很不好想，表面上是dp，但实际上是二分搜索，从左向右便利整个数列，逐个插入dp数列，维持dp数列的从小到大顺序即可
+~~~~
+class Solution(object):
+    def lengthOfLIS(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        dp = []
+        for x in nums:
+            i = self.bs(dp, x)
+            if i < 0:
+                i = - (i + 1)
+            if i == len(dp):
+                dp.append(x)
+            else:
+                dp[i] = x
+        return len(dp)
+~~~~
