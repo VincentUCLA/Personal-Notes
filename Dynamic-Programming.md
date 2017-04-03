@@ -106,7 +106,7 @@ def maxProduct(self, nums):
     return maxsofar
 ~~~~
 
-####494. Target Sum
+#### 494. Target Sum
 
 这题目看图就懂了……
 ![alt text](https://leetcode.com/uploads/files/1485048726667-screen-shot-2017-01-21-at-8.31.48-pm.jpg "DP 1")
