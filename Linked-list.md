@@ -1,7 +1,7 @@
-##Linked List
+## Linked List
 
-###1. 各种反转链表
-####206. Reverse Linked List
+### 1. 各种反转链表
+#### 206. Reverse Linked List
 反转链表母题，需要熟练掌握各种变量的变化顺序，追踪两个变量法
 ~~~~
 public ListNode reverseList(ListNode head) {
@@ -15,7 +15,7 @@ public ListNode reverseList(ListNode head) {
     return newHead;
 }
 ~~~~
-####92. Reverse Linked List II
+#### 92. Reverse Linked List II
 反转链表有很多种方式，上一题只是其中一种，这次我们来试试第二种，实际只追踪一个变量
 ~~~~
 public ListNode reverseBetween(ListNode head, int m, int n) {
@@ -34,7 +34,7 @@ public ListNode reverseBetween(ListNode head, int m, int n) {
     return dummy.next;
 }
 ~~~~
-####24. Swap Nodes in Pairs
+#### 24. Swap Nodes in Pairs
 简单题，注意顺序即可
 ~~~~
 public ListNode swapPairs(ListNode head) {
@@ -54,8 +54,8 @@ public ListNode swapPairs(ListNode head) {
     return dummy.next;
 }
 ~~~~
-###2. 其他杂题
-####2. Add Two Numbers
+### 2. 其他杂题
+#### 2. Add Two Numbers
 Input: (2 > 4 > 3) + (5 > 6 > 4)
 
 Output: 7 > 0 > 8
@@ -95,7 +95,7 @@ public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
 }
 ~~~~
 
-####23. Merge k Sorted Lists
+#### 23. Merge k Sorted Lists
 题目很直接就不再重复叙述了，这题最直截了当的想法是分治调用merge 2 sorted lists的函数，而后者是个人就会写
 ~~~~
 public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
@@ -137,7 +137,7 @@ public ListNode mergeKLists(ListNode[] lists) {
     }
 }
 ~~~~
-####147. Insertion Sort List
+#### 147. Insertion Sort List
 这题还真不是一个简单题，需要注意的就是如果插入位置后面的最小值就是插入位置本身的话，就不需要再移动
 ~~~~
 def insertionSortList(self, head):
@@ -161,7 +161,7 @@ def insertionSortList(self, head):
         inscur = inscur.next
     return dummy.next
 ~~~~
-####148. Sort List
+#### 148. Sort List
 这题反而不难。。。注意细节
 ~~~~
 def sortList(self, head):
