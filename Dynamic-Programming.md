@@ -1,6 +1,6 @@
-##Dynamic Programming
+## Dynamic Programming
 动态规划看书也看不懂，反正书上也是用例子来讲解，还不如实际做两道题就领悟的快。动态规划既可以理解成带记忆的递归，也可以理解成数学归纳法。
-####62. Unique Paths
+#### 62. Unique Paths
 A robot is located at the top-left corner of a m x n grid. The robot can only move either down or right at any point in time. The robot is trying to reach the bottom-right corner of the grid. How many possible unique paths are there? Note: m and n will be at most 100.
 
 Solution: 这个题目是二维动态规划的“母题”，很简单，想清楚2*2的情况就可以做出来。
@@ -19,7 +19,7 @@ public int uniquePaths(int m, int n) {
     return dp[m - 1][n - 1];
 }
 ~~~~
-####10. Regular Expression Matching
+#### 10. Regular Expression Matching
 Implement regular expression matching with support for '.' and '*'.
 
 '.' Matches any single character.
@@ -64,7 +64,7 @@ public boolean isMatch(String s, String p) {
     return dp[s.length()][p.length()];
 }
 ~~~~
-####44. Wildcard Matching
+#### 44. Wildcard Matching
 Implement wildcard pattern matching with support for '?' and '\*'.
 
 '?' Matches any single character.
@@ -90,7 +90,7 @@ public boolean isMatch(String s, String p) {
     return dp[s.length()][p.length()];
 }
 ~~~~
-####152. Maximum Product Subarray
+#### 152. Maximum Product Subarray
 不管你信不信，此题不是双指针而是dp，姊妹题53. Maximum Subarray，这两题是有一定区别的
 ~~~~
 def maxProduct(self, nums):
