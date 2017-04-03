@@ -1,7 +1,7 @@
-##Backtracking & Permutation
-###1. Depth First Search
+## Backtracking & Permutation
+### 1. Depth First Search
 leetcode四大陈腔滥调：回溯搜索、动态规划、双指针，二分法之首的回溯搜索
-####51. N-Queens
+#### 51. N-Queens
 这题太老套就不叙述题目了，本题是回溯搜索的母题，注意不要为了图省事每次调用递归函数都复制一遍棋盘，放在640k内存的时代这么玩妥妥爆栈。至于位操作之类属于奇技淫巧，实际上很影响代码可读性。
 
 回溯搜索的实质在于，调用递归函数前更改的条件，要在调用完之后再改回来。
