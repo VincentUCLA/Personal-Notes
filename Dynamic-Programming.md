@@ -105,3 +105,4 @@ def maxProduct(self, nums):
         minherepre = minhere;
     return maxsofar
 ~~~~
+![alt text](https://leetcode.com/uploads/files/1485048726667-screen-shot-2017-01-21-at-8.31.48-pm.jpg "DP 1")
