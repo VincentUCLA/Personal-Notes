@@ -88,33 +88,6 @@ public List<Integer> findAnagrams(String s, String p) {
     return ret;
 }
 ~~~~
-
-
-#### 209. Minimum Size Subarray Sum
-
-这个算是相对简单的双指针窗口问题了
-~~~~
-class Solution(object):
-    def minSubArrayLen(self, s, nums):
-        """
-        :type s: int
-        :type nums: List[int]
-        :rtype: int
-        """
-        left, right, l, sum, min = 0, 0, len(nums), 0, 2**32, 
-        while right < l:
-            if sum < s:
-                sum += nums[right]
-                right += 1
-            while sum >= s:
-                if right - left < min:
-                    min = right - left
-                sum -= nums[left]
-                left += 1
-        if min == 2**32:
-            return 0
-        return min
-~~~~
 ### 3. 双指针夹逼操作
 #### 11. Container With Most Water
 Given n nonnegative integers a1, a2, ..., an, where each represents a point at coordinate (i, ai). n vertical lines are drawn such that the two endpoints of line i is at (i, ai) and (i, 0). Find two lines, which together with x=axis forms a container,
