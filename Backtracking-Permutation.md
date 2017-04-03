@@ -171,7 +171,6 @@ def canFinish(self, numCourses, prerequisites):
             que.append(i)
             tot += 1
     ret = []
-    print(deg)
     while len(que) > 0:
         cur, que = que[0], que[1:]
         ret.append(cur)
