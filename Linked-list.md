@@ -34,6 +34,25 @@ public ListNode reverseBetween(ListNode head, int m, int n) {
     return dummy.next;
 }
 ~~~~
+#### 234. Palindrome Linked List
+快慢指针求中点，然后用慢指针作为中点往后遍历，前半部分是本题的难点，如果希望不改动链表的话，需要从头到尾再从尾到头翻转两次
+
+~~~~
+def isPalindrome(self, head):
+    slow, fast = head, head
+    rev = None
+    while fast and fast.next:
+        fast = fast.next.next
+        rev, rev.next, slow = slow, rev, slow.next
+    if fast: tail = slow.next
+    else: tail = slow
+    while rev:
+        if rev.val != tail.val: return False
+        slow, slow.next, rev = rev, slow, rev.next
+        tail = tail.next
+    return True
+~~~~
+
 #### 24. Swap Nodes in Pairs
 简单题，注意顺序即可
 ~~~~
