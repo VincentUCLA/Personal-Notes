@@ -91,7 +91,8 @@ public boolean isMatch(String s, String p) {
 }
 ~~~~
 #### 152. Maximum Product Subarray
-不管你信不信，此题不是双指针而是dp，姊妹题53. Maximum Subarray，这两题是有一定区别的
+
+不管你信不信，此题不是双指针而是dp，姊妹题53. Maximum Subarray，这两题是有一定区别的，负负相乘是正数，所以需要记录乘到此处的最大值和最小值，最小值乘以一个负数没准就变成了最大值呢对不对？
 ~~~~
 def maxProduct(self, nums):
     if nums is None:
@@ -105,7 +106,57 @@ def maxProduct(self, nums):
         minherepre = minhere;
     return maxsofar
 ~~~~
+#### 139. Word Break I
 
+可能是比较简单的动态规划题目，要注意下标变换
+~~~~
+def wordBreak(self, s, wordDict):
+    l = len(s)
+    dp = [False] * l
+    for i in range(l):
+        for w in wordDict:
+            lw = len(w)
+            if w == s[i-lw+1:i+1] and (dp[i-lw] or i-lw == -1):
+                dp[i] = True
+    return dp[-1]
+~~~~
+#### LC300 - Longest Increasing Subsequence
+
+这个题目不简单，需要结合动态规划和二分搜索才能达到O(nlogn)的复杂度。先说动态规划，dp[i]这个数组，第i个记录的，就是0-i这个递增子序列里可能出现的最小值。为什么呢？因为dp[i]是单调递增的
+
+那如何能保证他最小呢？有个简单的办法，就是用二分搜索寻找【目前遇到的数字】的插入点，【小于这个数字的最大值】后面的一格，插入进去，就是最小了。
+
+顺便如果二分搜索搜到了末尾的话，就贴到末尾，说明递增子序列延长了。
+~~~~
+def bs(self, arr, target):
+    left, right = 0, len(arr)
+    m = (left + right) // 2
+    while left < right:
+        if target == arr[m]:
+            return m
+        elif target > arr[m]:
+            left = m + 1
+        else:
+            right = m
+        m = (left + right) // 2
+    return -(m + 1)
+
+def lengthOfLIS(self, nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+    dp = []
+    for x in nums:
+        i = self.bs(dp, x)
+        if i < 0:
+            i = - (i + 1)
+        if i == len(dp):
+            dp.append(x)
+        else:
+            dp[i] = x
+    return len(dp)
+~~~~
 #### 494. Target Sum
 
 这题目看图就懂了……
