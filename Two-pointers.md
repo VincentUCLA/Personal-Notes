@@ -106,6 +106,88 @@ public static int maxArea(int[] height) {
     return maxArea;
 }
 ~~~~
+#### 15. 3Sum
+
+3-sum并不是用的hashmap，还是排个序比较快
+~~~~
+def threeSum(self, nums):
+    res = []
+    nums.sort()
+    for i in range(len(nums) - 2):
+        if i > 0 and nums[i] == nums[i - 1]:
+            continue
+        l, r = i + 1, len(nums) - 1
+        while l < r:
+            s = nums[i] + nums[l] + nums[r]
+            if s < 0:
+                l += 1
+            elif s > 0:
+                r -= 1
+            else:
+                res.append((nums[i], nums[l], nums[r]))
+                while l < r and nums[l] == nums[l + 1]:
+                    l += 1
+                while l < r and nums[r] == nums[r - 1]:
+                    r -= 1
+                l += 1
+                r -= 1
+    return res
+~~~~
+#### 16. 3Sum closest
+
+3-sum closest单纯就是3-sum的简单改造
+~~~~
+def threeSumClosest(self, num, target):
+    num.sort()
+    result = num[0] + num[1] + num[2]
+    for i in range(len(num) - 2):
+        j, k = i+1, len(num) - 1
+        while j < k:
+            sum = num[i] + num[j] + num[k]
+            if sum == target:
+                return sum
+            
+            if abs(sum - target) < abs(result - target):
+                result = sum
+            
+            if sum < target:
+                j += 1
+            elif sum > target:
+                k -= 1
+        
+    return result
+~~~~
+
+#### 18. 4Sum
+4-sum，这个算法的核心在于利用递归把n-sum问题化简为2-sum问题，然后用双指针解决2-sum问题
+~~~~
+def fourSum(self, nums, target):
+    def findNsum(nums, target, N, result, results):
+        if len(nums) < N or N < 2 or target < nums[0]*N or target > nums[-1]*N:  # early termination
+            return
+        if N == 2: # two pointers solve sorted 2-sum problem
+            l,r = 0,len(nums)-1
+            while l < r:
+                s = nums[l] + nums[r]
+                if s == target:
+                    results.append(result + [nums[l], nums[r]])
+                    l += 1
+                    while l < r and nums[l] == nums[l-1]:
+                        l += 1
+                elif s < target:
+                    l += 1
+                else:
+                    r -= 1
+        else: # recursively reduce N
+            for i in range(len(nums)-N+1):
+                if i == 0 or (i > 0 and nums[i-1] != nums[i]):
+                    findNsum(nums[i+1:], target-nums[i], N-1, result+[nums[i]], results)
+
+    results = []
+    findNsum(sorted(nums), target, 4, [], results)
+    return results
+~~~~   
+    
 #### 42. Trapping Rain Water
 Given n nonnegative integers representing an elevation map where the width of each bar is 1, compute how much water it is able to trap after raining.
 
