@@ -55,3 +55,27 @@ def diffWaysToCompute(self, input):
         res.append(int(input))
     return res
 ~~~~
+#### 220. Contains Duplicate III
+
+坐标差不能大于k，值差不能大于t
+
+如果t=0的话其实和LC219是同一个题目，加入t的话就是利用桶排序，每个桶大小为t+1，每经历过一轮k，就删除bucket里i-k所对应的值，这样就可以避免坐标差超过k的情况出现，而值差则是利用桶排序的性质，每一轮中在m桶里的数字很显然值差小于t，两侧桶里的数字经过恰当的测试值差也会小于t
+
+~~~~
+def containsNearbyAlmostDuplicate(self, nums, k, t):
+    bucket = {}
+    if t < 0: return False
+    w, n = t + 1, len(nums)
+    for i in range(0, n):
+        m = nums[i] // w
+        if m in bucket:
+            return True
+        if m - 1 in bucket and abs(nums[i] - bucket[m - 1]) < w:
+            return True
+        if m + 1 in bucket and abs(nums[i] - bucket[m + 1]) < w:
+            return True
+        bucket[m] = nums[i]
+        if i >= k:
+            del bucket[nums[i-k] // w]
+    return False
+~~~~
