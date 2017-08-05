@@ -85,16 +85,110 @@ def perm(self, nums, current, result, used):
             used[i] = False
 
 def permuteUnique(self, nums):
-    """
-    :type nums: List[int]
-    :rtype: List[List[int]]
-    """
     [ret, cur, used] = [[], [], []]
     nums = sorted(nums)
     for i in nums:
         used.append(False)
     self.perm(nums, cur, ret, used)
     return ret
+~~~~
+
+#### 212. Word Search I
+
+Word Search II真做不下去，但如果只是搜一个单词的话还是比较简单的，跟走迷宫完全一样的回溯搜索啦
+
+~~~~
+static boolean[][] visited;
+public boolean exist(char[][] board, String word) {
+    visited = new boolean[board.length][board[0].length];
+    for(int i = 0; i < board.length; i++){
+        for(int j = 0; j < board[i].length; j++){
+            if((word.charAt(0) == board[i][j]) && search(board, word, i, j, 0)){
+                return true;
+            }
+        }
+    }        
+    return false;
+}
+
+private boolean search(char[][]board, String word, int i, int j, int index){
+    if(index == word.length()){
+        return true;
+    }
+    if(i >= board.length || i < 0 || j >= board[i].length || j < 0 || board[i][j] != word.charAt(index) || visited[i][j]){
+        return false;
+    }        
+    visited[i][j] = true;
+    if(search(board, word, i-1, j, index+1) || 
+       search(board, word, i+1, j, index+1) ||
+       search(board, word, i, j-1, index+1) || 
+       search(board, word, i, j+1, index+1)){
+        return true;
+    }        
+    visited[i][j] = false;
+    return false;
+}
+~~~~
+#### 扯淡迷宫问题
+
+Suppose you have a 2-D grid. Each point is either land or water. There is also a start point and a goal. There are now keys that open up doors. Each key corresponds to one door. Implement a function that returns the shortest path from the start to the goal using land tiles, keys and open doors. Implement a function that returns the shortest path from the start to the goal using land tiles, keys and open doors.
+
+本身走迷宫问题基本都是简单的回溯搜索，但这个题目他存在一个钥匙和大门，我们按照正常人的逻辑，列出来几个逻辑：
+
+1. 没有开门之前就视同于墙
+2. 而且在没有拿到钥匙之前，最好是不要走回头路，否则的话那完全可以在这个地方无限打转转
+3. 拿到钥匙之后，允许走回头路，所以visited数组清零
+
+不要被这个题目吓着，这题没有非常难
+
+~~~~
+def solve(self, maze):
+    ret, path, keyring, visited = [], [], {}, self.initVisited(maze)
+    for i in range(0, len(maze)):
+        for j in range(0, len(maze[i])):
+            if maze[i][j] == '2':
+                self.walk(maze, i, j, keyring, path, ret, visited)
+    return ret
+
+def initVisited(self, maze):
+    ret = []
+    for i in maze:
+        temp = []
+        for j in i:
+            temp.append(False)
+        ret.append(temp)
+    return ret
+
+def walk(self, maze, y, x, keyring, path, ret, visited):
+    if y < 0 or y >= len(maze) or x < 0 or x >= len(maze[0]):
+        return                      # out of board
+    pt = maze[y][x]
+    if visited[y][x] or pt == '0':
+        return                      # visited
+    if pt == '3':
+        path.append([y, x])
+        ret = list(path)
+        print(ret)
+        return                      # found dest
+    if len(path) > len(ret) > 0:
+        return                      # longer path than old
+
+    if pt.isalpha():
+        if pt.isupper() and pt.lower() not in keyring:
+            return                  # key missing
+        elif pt.islower():
+            if pt not in keyring:
+                keyring[pt] = 1     # add key to keyring
+                visited = self.initVisited(maze)
+
+    visited[y][x] = True
+    path.append([y, x])
+    self.walk(maze, y, x + 1, keyring, path, ret, visited)
+    self.walk(maze, y + 1, x, keyring, path, ret, visited)
+    self.walk(maze, y, x - 1, keyring, path, ret, visited)
+    self.walk(maze, y - 1, x, keyring, path, ret, visited)
+    visited[y][x] = False
+    path.pop()
 ~~~~
 ### 2. Combinatorics
 组合问题略微烧脑，高中学的排列组合在这里会派上用场
@@ -154,11 +248,6 @@ BFS思考起来比DFS要简单很多，而且对于很多问题是秒杀……�
 这题目虽然是拓扑排序，BFS秒杀，然而仍然要注意，正向BFS是不如逆向BFS的，因为这题目的实质是寻找图里的环，含环图可以有个开端，但一定没有结尾
 ~~~~
 def canFinish(self, numCourses, prerequisites):
-    """
-    :type numCourses: int
-    :type prerequisites: List[List[int]]
-    :rtype: bool
-    """
     que, hashmap, deg, tot = [], {}, [0] * numCourses, 0
     for i in prerequisites:
         if i[0] not in hashmap:
@@ -185,4 +274,60 @@ def canFinish(self, numCourses, prerequisites):
         return ret
     else:
         return []
+~~~~
+
+#### LC269 - alien dictionary
+
+主要难点在读题，他这个是和以前做过的题目略有不同的，题目的意思是外星人的字母顺序与人类不同，但外星人提供了他们的字母排序算法，你要根据这个算法来求外星人语言的字母顺序
+
+其实就是个简单的拓扑排序去BFS，烦人的地方在于这个图你要自己画，他这个答案为了速度是选用的邻接矩阵，我个人是不太赞赏的，空间复杂度忒不和谐
+
+~~~~
+private final int N = 26;
+public String alienOrder(String[] words) {
+    boolean[][] adj = new boolean[N][N];
+    int[] visited = new int[N];
+    buildGraph(words, adj, visited);
+
+    StringBuilder sb = new StringBuilder();
+    for(int i = 0; i < N; i++) {
+        if(visited[i] == 0) {                 // unvisited
+            if(!dfs(adj, visited, sb, i)) return "";
+        }
+    }
+    return sb.reverse().toString();
+}
+
+public boolean dfs(boolean[][] adj, int[] visited, StringBuilder sb, int i) {
+    visited[i] = 1;                            // 1 = visiting
+    for(int j = 0; j < N; j++) {
+        if(adj[i][j]) {                        // connected
+            if(visited[j] == 1) return false;  // 1 => 1, cycle   
+            if(visited[j] == 0) {              // 0 = unvisited
+                if(!dfs(adj, visited, sb, j)) return false;
+            }
+        }
+    }
+    visited[i] = 2;                           // 2 = visited
+    sb.append((char) (i + 'a'));
+    return true;
+}
+
+public void buildGraph(String[] words, boolean[][] adj, int[] visited) {
+    Arrays.fill(visited, -1);                 // -1 = not even existed
+    for(int i = 0; i < words.length; i++) {
+        for(char c : words[i].toCharArray()) visited[c - 'a'] = 0;
+        if(i > 0) {
+            String w1 = words[i - 1], w2 = words[i];
+            int len = Math.min(w1.length(), w2.length());
+            for(int j = 0; j < len; j++) {
+                char c1 = w1.charAt(j), c2 = w2.charAt(j);
+                if(c1 != c2) {
+                    adj[c1 - 'a'][c2 - 'a'] = true;
+                    break;
+                }
+            }
+        }
+    }
+}
 ~~~~
