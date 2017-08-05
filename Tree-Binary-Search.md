@@ -132,7 +132,7 @@ def lowestCommonAncestor(self, root, p, q):
         elif right:
             return right
 ~~~~
-#### LC543 - Diameter of Binary Tree
+#### 543. Diameter of Binary Tree
 
 这个做法似乎是唯一解？但反正在二叉树问题里时间复杂度是很不漂亮的一种了
 
@@ -149,7 +149,7 @@ def diameterOfBinaryTree(self, root):
     return self.best - 1
 ~~~~
 ### 4. Graph
-#### LC133 - Clone graph
+#### 133. Clone graph
 
 这个问题的题眼是，复制一个图，其中每个节点都只能创造一次，第二次调用它的时候你就得重复调用以前使用过的节点
 
