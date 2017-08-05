@@ -89,7 +89,38 @@ def findPeakElement(self, nums):
         else:
             left = m + 1
 ~~~~
+#### First/Last Occurrence of Binary Search
 
+这个题目也是简单的二分搜索，唯一需要讨论的就是边界条件
+
+~~~~
+int first(int arr[], int low, int high, int x, int n) {
+    if(high >= low) {
+        int mid = low + (high - low)/2;
+        if (( mid == 0 || x > arr[mid-1]) && arr[mid] == x)
+            return mid;
+        else if(x > arr[mid])
+            return first(arr, (mid + 1), high, x, n);
+        else
+            return first(arr, low, (mid -1), x, n);
+    }
+    return -1;
+}
+	 
+int last(int arr[], int low, int high, int x, int n) {
+    if (high >= low) {
+        int mid = low + (high - low)/2;
+        if (( mid == n-1 || x < arr[mid+1]) && arr[mid] == x)
+            return mid;
+        else if (x < arr[mid])
+            return last(arr, low, (mid -1), x, n);
+        else
+            return last(arr, (mid + 1), high, x, n);
+    }
+    return -1;
+}
+~~~~
+ 
 ### 3. Binary Search Tree
 #### 285. Inorder Successor in BST
 
