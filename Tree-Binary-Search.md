@@ -90,32 +90,87 @@ def findPeakElement(self, nums):
             left = m + 1
 ~~~~
 
-
-#### 300. Longest Increasing Subsequence
-这个题目很不好想，表面上是dp，但实际上是二分搜索，从左向右便利整个数列，逐个插入dp数列，维持dp数列的从小到大顺序即可
-~~~~
-def lengthOfLIS(self, nums):
-    """
-    :type nums: List[int]
-    :rtype: int
-    """
-    dp = []
-    for x in nums:
-        i = self.bs(dp, x)
-        if i < 0:
-            i = - (i + 1)
-        if i == len(dp):
-            dp.append(x)
-        else:
-            dp[i] = x
-    return len(dp)
-~~~~
-
 ### 3. Binary Search Tree
-BST不常考，但不会的话在面试中会很尴尬的。必须采用BST处理的问题在面试中都是难度颇高的题目了，因为没有语言会自带这个数据结构，必须要自己写。
+#### 285. Inorder Successor in BST
 
-写之前需要明确到底需要哪些接口：插入put，搜索get/__contains__，删除del，取长度__len__，迭代器__iter__，最后可以中序遍历一下来验证这个数据结构的完整性。其中唯一一个算法比较复杂的就是删除del
+货真价实的简单题，BST中序遍历是单调递增的，所以实际就是在BST里寻找比p大的最小值咯
 
 ~~~~
+def inorderSuccessor(self, root, p):
+    ret = None
+    while root:
+        if p.val < root.val:
+            ret = root
+            root = root.left
+        else:
+            root = root.right
+    return ret
+~~~~
+#### 235/6 Lowest Common Ancestor of BST / Binary Tree
 
+BST的话要注意方向，如果不是BST的话要注意他是如何变换状态的
+
+~~~~
+def lowestCommonAncestor(self, root, p, q):
+    if root.val < p.val and root.val < q.val:
+        return self.lowestCommonAncestor(root.right, p, q)
+    elif root.val > p.val and root.val > q.val:
+        return self.lowestCommonAncestor(root.left, p, q)
+    else:
+        return root
+
+def lowestCommonAncestor(self, root, p, q):
+    if root is None or root is p or root is q:
+        return root
+    else:
+        left = self.lowestCommonAncestor(root.left, p, q)
+        right = self.lowestCommonAncestor(root.right, p, q)
+        if left and right:
+            return root
+        elif left:
+            return left
+        elif right:
+            return right
+~~~~
+#### LC543 - Diameter of Binary Tree
+
+这个做法似乎是唯一解？但反正在二叉树问题里时间复杂度是很不漂亮的一种了
+
+~~~~
+def diameterOfBinaryTree(self, root):
+    self.best = 1
+    def depth(root):
+        if not root: return 0
+        depL = depth(root.left)
+        depR = depth(root.right)
+        self.best = max(self.best, depL + depR + 1)
+        return max(depL, depR) + 1
+    depth(root)
+    return self.best - 1
+~~~~
+### 4. Graph
+#### LC133 - Clone graph
+
+这个问题的题眼是，复制一个图，其中每个节点都只能创造一次，第二次调用它的时候你就得重复调用以前使用过的节点
+
+其他的其实就是简单的BFS而已
+
+~~~~
+def cloneGraph(self, node):
+    if not node:
+        return 
+    nodeCopy = UndirectedGraphNode(node.label)
+    dic = {node: nodeCopy}
+    queue = collections.deque([node])
+    while queue:
+        node = queue.popleft()
+        for neighbor in node.neighbors:
+            if neighbor not in dic:
+                neighborCopy = UndirectedGraphNode(neighbor.label)
+                dic[neighbor] = neighborCopy
+                dic[node].neighbors.append(neighborCopy)
+                queue.append(neighbor)
+            else:
+                dic[node].neighbors.append(dic[neighbor])
+    return nodeCopy
 ~~~~
