@@ -6,7 +6,7 @@ A robot is located at the top-left corner of a m x n grid. The robot can only mo
 Solution: 这个题目是二维动态规划的“母题”，很简单，想清楚2*2的情况就可以做出来。
 
 ps: 高中讲数学归纳法的意义就在这了，动态规划的思想跟数学归纳法很相似，只需要证明两个情况下（0->1, x->x+1）状态转移方程成立即可。
-~~~~
+```java
 public int uniquePaths(int m, int n) {
     int[][] dp = new int[m][n];
     for (int i = 0; i<m; i++)
@@ -18,7 +18,36 @@ public int uniquePaths(int m, int n) {
             dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
     return dp[m - 1][n - 1];
 }
-~~~~
+```
+#### 97. Interleaving String
+Given s1, s2, s3, find whether s3 is formed by the interleaving of s1 and s2.
+
+Solution: 二维DP，`dp[i][j]`意味着`s1[:i]`和`s2[:j]`可以构成`s3[i+j]`
+```py
+def isInterleave(self, s1, s2, s3):
+    # edge cases
+    if s1 == '':
+        return s2 == s3
+    if s2 == '':
+        return s1 == s3
+    if s3 == '':
+        return s1 == s2 == ''
+    len1, len2, len3 = len(s1), len(s2), len(s3)
+    if len3 != len1 + len2:
+        return False
+    
+    # prepare DP matrix and base case
+    dp = [[0] * (len2 + 1) for _ in range(len1 + 1)]
+    for i in range(1, len1 + 1):
+        dp[i][0] = s1[:i] == s3[:i]
+    for j in range(1, len2 + 1):
+        dp[0][j] = s2[:j] == s3[:j]
+    for i in range(1, len1 + 1):
+        for j in range(1, len2 + 1):
+            dp[i][j] = dp[i - 1][j] and s3[i + j - 1] == s1[i - 1] \
+                    or dp[i][j - 1] and s3[i + j - 1] == s2[j - 1]
+    return dp[len1][len2]
+```
 #### 10. Regular Expression Matching
 Implement regular expression matching with support for '.' and '*'.
 
@@ -41,7 +70,7 @@ The matching should cover the entire input string (not partial).
         2. dp[i+1][j] （a*代表一个a）
         3. dp[i+1][j-1] （a*不代表a）
     2. 否则的话dp[i+1][j+1] = dp[i+1][j1]
-~~~~
+```java
 public boolean isMatch(String s, String p) {
     if (s == null || p == null)
         return false;
@@ -63,7 +92,7 @@ public boolean isMatch(String s, String p) {
         }
     return dp[s.length()][p.length()];
 }
-~~~~
+```
 #### 44. Wildcard Matching
 Implement wildcard pattern matching with support for '?' and '\*'.
 
@@ -74,7 +103,7 @@ Implement wildcard pattern matching with support for '?' and '\*'.
 The matching should cover the entire input string (not partial).
 
 这题和第10题几乎完全一样，只是关键字略有不同
-~~~~
+```java
 public boolean isMatch(String s, String p) {
     boolean[][] dp = new boolean[s.length()+1][p.length()+1];
     dp[0][0] = true;
@@ -89,11 +118,11 @@ public boolean isMatch(String s, String p) {
         }
     return dp[s.length()][p.length()];
 }
-~~~~
+```
 #### 152. Maximum Product Subarray
 
 不管你信不信，此题不是双指针而是dp，姊妹题53. Maximum Subarray，这两题是有一定区别的，负负相乘是正数，所以需要记录乘到此处的最大值和最小值，最小值乘以一个负数没准就变成了最大值呢对不对？
-~~~~
+```py
 def maxProduct(self, nums):
     if nums is None:
         return 0
@@ -105,11 +134,11 @@ def maxProduct(self, nums):
         maxherepre = maxhere;
         minherepre = minhere;
     return maxsofar
-~~~~
+```
 #### 139. Word Break I
 
 可能是比较简单的动态规划题目，要注意下标变换
-~~~~
+```py
 def wordBreak(self, s, wordDict):
     l = len(s)
     dp = [False] * l
@@ -119,15 +148,15 @@ def wordBreak(self, s, wordDict):
             if w == s[i-lw+1:i+1] and (dp[i-lw] or i-lw == -1):
                 dp[i] = True
     return dp[-1]
-~~~~
-#### LC300 - Longest Increasing Subsequence
+```
+#### 300. Longest Increasing Subsequence
 
 这个题目不简单，需要结合动态规划和二分搜索才能达到O(nlogn)的复杂度。先说动态规划，dp[i]这个数组，第i个记录的，就是0-i这个递增子序列里可能出现的最小值。为什么呢？因为dp[i]是单调递增的
 
 那如何能保证他最小呢？有个简单的办法，就是用二分搜索寻找【目前遇到的数字】的插入点，【小于这个数字的最大值】后面的一格，插入进去，就是最小了。
 
 顺便如果二分搜索搜到了末尾的话，就贴到末尾，说明递增子序列延长了。
-~~~~
+```py
 def bs(self, arr, target):
     left, right = 0, len(arr)
     m = (left + right) // 2
@@ -156,13 +185,13 @@ def lengthOfLIS(self, nums):
         else:
             dp[i] = x
     return len(dp)
-~~~~
+```
 #### 494. Target Sum
 
 这题目看图就懂了……
 ![alt text](https://leetcode.com/uploads/files/1485048726667-screen-shot-2017-01-21-at-8.31.48-pm.jpg "DP 1")
 
-~~~~
+```py
 def findTargetSumWays(self, nums, S):
     """
     :type nums: List[int]
@@ -182,4 +211,4 @@ def findTargetSumWays(self, nums, S):
                 nextdp[j - i] += dp[j]
         dp = nextdp
     return dp[sumN + S]
-~~~~
+```

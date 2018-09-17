@@ -6,7 +6,7 @@
 
 相关leetcode题目：150. Evaluate Reverse Polish Notation, 224. Basic Calculator
 
-~~~~
+```py
 def tokenize(self, str):
     newS = str.replace("(", " ( ")
     newS = newS.replace(")", " ) ")
@@ -52,11 +52,11 @@ def in2post(self, str):
     while len(stk) > 0:
         ret.append(stk.pop())
     return ret
-~~~~
+```
 
 计算后缀式：这个不难，唯一需要注意的部分是两个操作数的弹出顺序。
 
-~~~~
+```py
 def cal(self, optr, opte1, opte2):
     opt1 = int(opte1)
     opt2 = int(opte2)
@@ -83,11 +83,11 @@ def eval(self, str):
             opte1 = stk.pop()
             stk.append(self.cal(i, opte1, opte2))
     return stk.pop()
-~~~~
+```
 ## Sorting
 选择排序最好理解，每次迭代都从子数组里寻找最小值即可，第k次迭代抽出来的即是第k小值
 
-~~~~
+```py
 def swap(self, arr, i, j):
     temp = arr[j]
     arr[j] = arr[i]
@@ -105,11 +105,11 @@ def selectSort(self, arr):
                 m = j
         self.swap(arr, i, m)
     return arr
-~~~~
+```
 
 插入排序的话需要假设前面第i-1个数字是排好序的，然后把第i个数字插到已经排好序的数组里的恰当位置；既然是插入那么其实用链表比用数组要经济
 
-~~~~
+```py
 def insertSort(self, arr):
     l = len(arr)
     for i in range(1, l):
@@ -120,11 +120,11 @@ def insertSort(self, arr):
             j -= 1
         arr[j + 1] = temp
     return arr
-~~~~
+```
 
 合并排序很容易理解，要点是每排完一个数组就把另一个数组剩余值贴后面
 
-~~~~
+```py
 def merge(self, arr1, arr2):
     arr = []
     [l1, l2] = [len(arr1), len(arr2)]
@@ -156,11 +156,11 @@ def mergeSort(self, arr):
         m1 = self.mergeSort(arr[0:l1])
         m2 = self.mergeSort(arr[l1:])
         return self.merge(m1, m2)
-~~~~
+```
 
 快速排序没什么好说的
 
-~~~~
+```py
 def quickSort(self, arr):
     l = len(arr)
     if l <= 1:
@@ -177,14 +177,14 @@ def quickSort(self, arr):
         else:
             c.append(i)
     return self.quickSort(a) + b + self.quickSort(c)
-~~~~
+```
 
 ### Quick-select
 这个只要体会了思想，题目倒并不是很难，但如果不理解这个思想的话有的题目是完全无从措手的
 
 相关leetcode题目：4. Median of Two Sorted Arrays，这道题因为是两个已经排好序的数列，可以略去一些选择的步骤
 
-~~~~
+```py
 def quickselect(self, arr, k):
     print(arr)
     print(k)
@@ -208,14 +208,14 @@ def quickselect(self, arr, k):
             return self.quickselect(a, k)
         else:
             return self.quickselect(c, k - len(a) - len(b))
-~~~~
+```
 
 #### 4. Median of Two Sorted Arrays
 There are two sorted arrays nums1 and nums2 of size m and n respectively. Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).
 
 本题就是采用的Quick-select的思想，把求两个有序数列中位数，转化成求两个有序数列中第k大的数。采取减治法：将两个数列各自分成两段，两数列前半段共有k个数字；如果两数列前半段的末尾数字相等，那即为所求；否则的话，尾数较小的一个前半段中是不可能出现这个第k大数字的，下次递归时略去即可。	
 
-~~~~
+```java
 public double findMedianSortedArrays(int[] nums1, int[] nums2) {
     int l = nums1.length + nums2.length;
     if (l % 2 == 1) return findKth(nums1, nums2, (l / 2 + 1));
@@ -237,11 +237,11 @@ public double findKth(int[] nums1, int[] nums2, int k){
         return findKth(nums1, temp, k ‐ pb);
     }
 }
-~~~~
+```
 ## Union-find
 Quick-find: 确定两个点是否处在同一个连通集里：遍历所有的边(p, q)，每次都把id[p]改成id[q]
 
-~~~~
+```py
 class UF:
     id = []
     count = 0
@@ -277,7 +277,7 @@ class UF:
                     if self.id[j] == pID:
                         self.id[j] = qID
                 self.dump()
-~~~~
+```
 
 
 ## Hash Table
@@ -286,7 +286,7 @@ Given an array of integers, return indices of the two numbers such that they add
 
 从头至尾检索一遍数组，如果Hashmap里没有(target - nums[i])就丢进去{nums[i], i}，否则的话就是遇到了结果，返回(target - nums[i])的角标
 （Hashmap.get(target - nums[i])）和当前角标。
-~~~~
+```java
 public int[] twoSum(int[] nums, int target) {
     if (nums == null || nums.length == 0)
             return new int[]{0, 0};
@@ -303,29 +303,4 @@ public int[] twoSum(int[] nums, int target) {
     }
     return new int[]{0, 0};
 }
-~~~~
-
-##Greedy
-
-##Heap
-
-##Graph
-
-####Connected & Reachable
-
-####Topological Sort
-
-####Strongly connected
-
-####Dijkstra & Bellman-Ford
-
-####Prim & Kruskal
-
-##String
-####StringBuffer
-
-####KMP Algorithm
-
-####Huffman Algorithm
-
-##Bit manipulation
+```
