@@ -1,8 +1,11 @@
-## Linked List
+# Linked List
 
-### 1. 各种反转链表
-#### 206. Reverse Linked List
+## 1. 各种反转链表
+
+### 206. Reverse Linked List
+
 反转链表母题，需要熟练掌握各种变量的变化顺序，追踪两个变量法
+
 ```java
 public ListNode reverseList(ListNode head) {
     ListNode newHead = null;
@@ -15,8 +18,11 @@ public ListNode reverseList(ListNode head) {
     return newHead;
 }
 ```
-#### 92. Reverse Linked List II
+
+### 92. Reverse Linked List II
+
 反转链表有很多种方式，上一题只是其中一种，这次我们来试试第二种，实际只追踪一个变量
+
 ```java
 public ListNode reverseBetween(ListNode head, int m, int n) {
     ListNode dummy = new ListNode(0);
@@ -34,7 +40,9 @@ public ListNode reverseBetween(ListNode head, int m, int n) {
     return dummy.next;
 }
 ```
-#### 234. Palindrome Linked List
+
+### 234. Palindrome Linked List
+
 快慢指针求中点，然后用慢指针作为中点往后遍历，前半部分是本题的难点，如果希望不改动链表的话，需要从头到尾再从尾到头翻转两次
 
 ```java
@@ -52,8 +60,11 @@ def isPalindrome(self, head):
         tail = tail.next
     return True
 ```
-#### 24. Swap Nodes in Pairs
+
+### 24. Swap Nodes in Pairs
+
 简单题，注意顺序即可
+
 ```java
 public ListNode swapPairs(ListNode head) {
     ListNode dummy = new ListNode(0);
@@ -72,13 +83,17 @@ public ListNode swapPairs(ListNode head) {
     return dummy.next;
 }
 ```
-### 2. 其他杂题
-#### 2. Add Two Numbers
+
+## 2. 其他杂题
+
+### 2. Add Two Numbers
+
 Input: (2 > 4 > 3) + (5 > 6 > 4)
 
 Output: 7 > 0 > 8
 
 这个题目的难点在于corner case多而且庞杂，但实际上不需要转换成十进制数字，因为他本身提供的链表就是从小到大的，符合加法的计算习惯，生加即可
+
 ```java
 public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
     ListNode dummy = new ListNode(0);
@@ -114,8 +129,11 @@ public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
     return dummy.next;
 }
 ```
-#### 23. Merge k Sorted Lists
+
+### 23. Merge k Sorted Lists
+
 题目很直接就不再重复叙述了，这题最直截了当的想法是分治调用merge 2 sorted lists的函数，而后者是个人就会写
+
 ```java
 public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
     if (l1 == null && l2 == null) return null;
@@ -156,8 +174,11 @@ public ListNode mergeKLists(ListNode[] lists) {
     }
 }
 ```
-#### 147. Insertion Sort List
+
+### 147. Insertion Sort List
+
 这题还真不是一个简单题，需要注意的就是如果插入位置后面的最小值就是插入位置本身的话，就不需要再移动
+
 ```py
 def insertionSortList(self, head):
     dummy = ListNode(0)
@@ -180,18 +201,21 @@ def insertionSortList(self, head):
         inscur = inscur.next
     return dummy.next
 ```
-#### 148. Sort List
+
+### 148. Sort List
+
 这题反而不难。。。注意细节
+
 ```py
 def sortList(self, head):
     """
     :type head: ListNode
     :rtype: ListNode
     """
-    # Corner case
+     Corner case
     if head == None or head.next == None:
         return head
-    # find middle node using fast & slow pointer
+     find middle node using fast & slow pointer
     slow = head
     fast = head
     while fast.next != None and fast.next.next != None:
@@ -199,11 +223,11 @@ def sortList(self, head):
         fast = fast.next.next
     a = head
     b = slow.next
-    # truncate list by middle node
+     truncate list by middle node
     slow.next = None
-    # recursion
+     recursion
     a = self.sortList(a)
     b = self.sortList(b)
-    # use merge sort
+     use merge sort
     return self.mergeTwoLists(a, b)
 ```

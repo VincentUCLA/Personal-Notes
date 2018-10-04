@@ -1,27 +1,38 @@
-## Misc
-#### 8. String to Integer (atoi)
+# Misc
+
+### 8. String to Integer (atoi)
+
 1. 用trim()函数删除左右的空格，如果剩余字符串为空则返回0；
 2. 处理首位的正负号；
 3. 处理数字，一旦遇到非数字字符则退出循环，处理溢出。
-#### 65. Valid Number
+
+### 65. Valid Number
+
 这题目纠结各种情况就是自讨苦吃，本质仅仅是一道正则表达式练习题。还有人用自动机做，我只想说真的是吃饱了撑的……
-```
+
+```py
 "[‐+]?(([0‐9]+(.[0‐9]*)?)|.[0‐9]+)(e[‐+]?[0‐9]+)?"
 ```
-#### 179. Largest Number
+
+### 179. Largest Number
+
 这题的逻辑很浅显，然而限于我python力太弱，python3取消cmp之后的语法我也不会写……
 
 这题的逻辑就是按照两个字串连接之后的数字大小来排序，不难
+
 ```py
 def largestNumber(self, num):
     num = [str(x) for x in num]
     num.sort(cmp=lambda x, y: cmp(y+x, x+y))
     return ''.join(num).lstrip('0') or '0'
 ```
-#### 75. Sort Color
+
+### 75. Sort Color
+
 这个做法颇为鸡贼，\[0, i)部分是0，\[i, j)部分是1，\[j, n)部分是2
 
 所以呢，2就一路向后推，遇到小于2的数字就增加j，等于0的时候就增加i
+
 ```py
 def sortColors(self, nums):
     i = j = 0
@@ -35,25 +46,31 @@ def sortColors(self, nums):
             nums[i] = 0
             i += 1
 ```
-#### 347. Top K Frequent Elements
+
+### 347. Top K Frequent Elements
+
 这个题不难，hash map+heap queue，需要注意的就是heapq默认是最小堆，改成最大堆只需要把key变成负的就可以呀
+
 ```py
 def topKFrequent(self, nums, k):
-	freq, h, ret = {}, [], []
-	for i in nums:
-		if i in freq:
-			freq[i] += 1
-		else:
-			freq[i] = 1
-	for i in freq:
-		heapq.heappush(h, (-freq[i], i))
-	for i in range(0, k):
-		temp = heapq.heappop(h)
-		ret.append(temp[1])
-	return ret
+    freq, h, ret = {}, [], []
+    for i in nums:
+        if i in freq:
+            freq[i] += 1
+        else:
+            freq[i] = 1
+    for i in freq:
+        heapq.heappush(h, (-freq[i], i))
+    for i in range(0, k):
+        temp = heapq.heappop(h)
+        ret.append(temp[1])
+    return ret
 ```
-#### 189. Rotate Array
+
+### 189. Rotate Array
+
 这个题不难，ABCD要旋转成CDAB的话，可以先翻转ABCD到DCBA，然后分别翻转两半为CDAB即可
+
 ```java
 public void rotate(int[] nums, int k) {
     k %= nums.length;
@@ -72,8 +89,11 @@ public void reverse(int[] nums, int start, int end) {
     }
 }
 ```
-#### 172. Factorial Trailing Zeroes
+
+### 172. Factorial Trailing Zeroes
+
 这个题不难，首先要构成一个0的尾数就必须包含5，其次呢如果这个n的系数里包含不止一个5，需要处理完现在这个再去除以5，处理下一个
+
 ```py
 def trailingZeroes(self, n):
     if n == 0:
@@ -82,8 +102,11 @@ def trailingZeroes(self, n):
         a = self.trailingZeroes(n // 5)
         return n // 5 + a
 ```
-#### 208. Implement Trie (Prefix Tree)
+
+### 208. Implement Trie (Prefix Tree)
+
 Trie最好是不要用递归写法，太长，容易错，迭代其实不难解决
+
 ```py
 class TrieNode:
     def __init__(self):
@@ -118,36 +141,40 @@ class Trie:
             node=node.children[i]
         return True
 ```
-#### 155. min stack
+
+### 155. min stack
+
 这个东西的难点就是如何记录【某一时刻的最小值】，那很简单，每次最小值变得更小，就往栈里连推两次，第一次推最小值，第二次推x；每次最小值变得更大的时候呢，从栈里连弹两次，第一次弹出来的是x，第二次弹出来的是最小值
+
 ```java
 class MinStack {
     int min = Integer.MAX_VALUE;
     Stack<Integer> stack = new Stack<Integer>();
     public void push(int x) {
-        if(x <= min){          
+        if(x <= min){
             stack.push(min);
             min=x;
         }
         stack.push(x);
-    }	
+    }
     public void pop() {
         if(stack.pop() == min)
             min=stack.pop();
-    }	
+    }
     public int top() { return stack.peek();}
     public int getMin() { return min;}
 }
 ```
-#### Ternary Expression to Binary Tree
+
+### Ternary Expression to Binary Tree
 
 这题目leetcode里没有，可能因为太简单？两个解法，一个是栈解法：
 
 1. 一开始推进去一个树节点
 2. 每次向右推两格
-	1. 遇到问号呢，就把当前栈顶节点的左子树加上这个节点
-	2. 遇到冒号的话，先往外弹一个，然后如果遇到右子树满着的节点，一路从栈往外弹，直到遇到右子树为空的节点
-	3. 每次循环的最后把节点推进去
+    1. 遇到问号呢，就把当前栈顶节点的左子树加上这个节点
+    2. 遇到冒号的话，先往外弹一个，然后如果遇到右子树满着的节点，一路从栈往外弹，直到遇到右子树为空的节点
+    3. 每次循环的最后把节点推进去
 
 另一个是递归，问号后面的【整个字符串】是左子树，冒号后面的【整个字符串】是右子树呗
 
@@ -187,7 +214,8 @@ Node convertExpression(char[] expression, int i)
     return root;
 }
 ```
-#### 41. First Missing Positive
+
+### 41. First Missing Positive
 
 难度2/5，时间复杂度O(n)，空间复杂度O(1)
 
@@ -209,7 +237,8 @@ def firstMissingPositive(self, nums):
             return i+1
     return l+1
 ```
-#### Given unsorted array of int, each element is the length of a rod, return the minimum total cost of combining all rods. 
+
+### Given unsorted array of int, each element is the length of a rod, return the minimum total cost of combining all rods
 
 难度2/5，这题目最简单的办法很显然是最小堆，不证明了，每次从最小堆里提出来两根棍子接一起，然后把接起来的新棍子丢最小堆里，每次操作的复杂度是O(logn)，所以总时间复杂度就是O(nlogn)，空间复杂度很显然是O(n)
 
@@ -219,14 +248,15 @@ int minCost(int len[], int n) {
     struct MinHeap* minHeap = createAndBuildMinHeap(len, n);
     while (!isSizeOne(minHeap)) {
         int min     = extractMin(minHeap);
-        int sec_min = extractMin(minHeap); 
+        int sec_min = extractMin(minHeap);
         cost += (min + sec_min);
         insertMinHeap(minHeap, min+sec_min);
     }
     return cost;
 }
 ```
-#### 493. Reverse Pairs
+
+### 493. Reverse Pairs
 
 这题目太离谱了，居然连BST都会超时，可以算leetcode上最难最扯淡的几个题目了。数组树太麻烦了，咱用简单算法
 
@@ -259,8 +289,11 @@ def reversePairs(self, nums):
     msort(nums)
     return self.cnt
 ```
-#### 204. Count Primes
+
+### 204. Count Primes
+
 埃拉托斯特尼筛法，不难，但这个例程可以学到不少python奇形怪状的语法
+
 ```py
 def countPrimes(self, n):
     if n < 3: return 0
@@ -271,8 +304,11 @@ def countPrimes(self, n):
             primes[i*i:n:i] = [False] * len(primes[i*i:n:i])
     return sum(primes)
 ```
-#### 241. Different Ways to Add Parentheses
+
+### 241. Different Ways to Add Parentheses
+
 这题目看代码就好，讲解也讲不明白……实际上是个简单的分治
+
 ```py
 def diffWaysToCompute(self, input):
     res = []
@@ -293,7 +329,8 @@ def diffWaysToCompute(self, input):
         res.append(int(input))
     return res
 ```
-#### 220. Contains Duplicate III
+
+### 220. Contains Duplicate III
 
 坐标差不能大于k，值差不能大于t
 
@@ -317,7 +354,8 @@ def containsNearbyAlmostDuplicate(self, nums, k, t):
             del bucket[nums[i-k] // w]
     return False
 ```
-#### 239. Sliding Window Maximum
+
+### 239. Sliding Window Maximum
 
 当我们遇到新的数时，将新的数和双向队列的末尾比较，如果末尾比新数小，则把末尾扔掉，直到该队列的末尾比新数大或者队列为空的时候才住手。这样，我们可以保证队列里的元素是从头到尾降序的，由于队列里只有窗口内的数，所以他们其实就是窗口内第一大，第二大，第三大...的数。
 

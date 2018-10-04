@@ -1,6 +1,40 @@
 # Personal-Notes
+
+## String基本操作
+
+```py
+s2 = "shaunwei"
+s2[-3:] = "wei"
+s2[5:8] = "wei"
+s2.index('w') = 5  # if not found, return -1
+```
+
+## 链表
+
+链表的技巧不多，主要是记忆操作顺序太繁琐，现想其实也是有时间的。
+
+1. 翻转链表
+2. 删除节点
+3. Dummy Node
+4. 快慢指针
+
+## Tree
+
+### 遍历：DFS和BFS
+
+1. 前序
+2. 中序
+3. 后序
+4. BFS
+
 ## Stack & Queues
-#### Infix Expression Evaluation
+
+### 堆栈与DFS和BFS
+
+1. Stack一般用来模拟DFS，但不如回溯简洁
+2. Queue一般用来模拟BFS
+
+### Infix Expression Evaluation
 
 中缀到后缀转换：要点在于，为什么遇到计算符时要把优先级大于等于自己的运算符全部弹出？因为在后缀表达式里他们放在前面就等于先去计算他们啊；栈在这里实际上就是起到的一个保存计算顺序的作用，而“有控制地”从栈中弹出运算符可以达到把中缀式代换成语法树（也就是后缀式）的目的。
 
@@ -84,7 +118,9 @@ def eval(self, str):
             stk.append(self.cal(i, opte1, opte2))
     return stk.pop()
 ```
+
 ## Sorting
+
 选择排序最好理解，每次迭代都从子数组里寻找最小值即可，第k次迭代抽出来的即是第k小值
 
 ```py
@@ -142,7 +178,6 @@ def merge(self, arr1, arr2):
         arr += arr1[i1:]
     return arr
 
-
 def mergeSort(self, arr):
     l = len(arr)
     if l == 1:
@@ -179,7 +214,8 @@ def quickSort(self, arr):
     return self.quickSort(a) + b + self.quickSort(c)
 ```
 
-### Quick-select
+## Quick-select
+
 这个只要体会了思想，题目倒并不是很难，但如果不理解这个思想的话有的题目是完全无从措手的
 
 相关leetcode题目：4. Median of Two Sorted Arrays，这道题因为是两个已经排好序的数列，可以略去一些选择的步骤
@@ -210,10 +246,11 @@ def quickselect(self, arr, k):
             return self.quickselect(c, k - len(a) - len(b))
 ```
 
-#### 4. Median of Two Sorted Arrays
+### 4. Median of Two Sorted Arrays
+
 There are two sorted arrays nums1 and nums2 of size m and n respectively. Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).
 
-本题就是采用的Quick-select的思想，把求两个有序数列中位数，转化成求两个有序数列中第k大的数。采取减治法：将两个数列各自分成两段，两数列前半段共有k个数字；如果两数列前半段的末尾数字相等，那即为所求；否则的话，尾数较小的一个前半段中是不可能出现这个第k大数字的，下次递归时略去即可。	
+本题就是采用的Quick-select的思想，把求两个有序数列中位数，转化成求两个有序数列中第k大的数。采取减治法：将两个数列各自分成两段，两数列前半段共有k个数字；如果两数列前半段的末尾数字相等，那即为所求；否则的话，尾数较小的一个前半段中是不可能出现这个第k大数字的，下次递归时略去即可。
 
 ```java
 public double findMedianSortedArrays(int[] nums1, int[] nums2) {
@@ -238,7 +275,9 @@ public double findKth(int[] nums1, int[] nums2, int k){
     }
 }
 ```
+
 ## Union-find
+
 Quick-find: 确定两个点是否处在同一个连通集里：遍历所有的边(p, q)，每次都把id[p]改成id[q]
 
 ```py
@@ -279,13 +318,15 @@ class UF:
                 self.dump()
 ```
 
-
 ## Hash Table
-#### 1. Two Sum
+
+### 1. Two Sum
+
 Given an array of integers, return indices of the two numbers such that they add up to a specific target. You may assume that each input would have exactly one solution.
 
 从头至尾检索一遍数组，如果Hashmap里没有(target - nums[i])就丢进去{nums[i], i}，否则的话就是遇到了结果，返回(target - nums[i])的角标
 （Hashmap.get(target - nums[i])）和当前角标。
+
 ```java
 public int[] twoSum(int[] nums, int target) {
     if (nums == null || nums.length == 0)

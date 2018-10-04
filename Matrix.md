@@ -1,8 +1,13 @@
-## Matrix
-#### 48. Rotate Image
+# Matrix
+
+## 1. 矩阵翻转操作
+
+### 48. Rotate Image
+
 You are given an n x n 2D matrix representing an image. Rotate the image by 90 degrees (clockwise).
 
 顺时针旋转90度 = 逆时针转90度再水平翻转；逆时针转90度就是求转置矩阵
+
 ```java
 public void rotate(int[][] matrix) {
     // transpose
@@ -22,10 +27,13 @@ public void rotate(int[][] matrix) {
     }
 }
 ```
-#### 54. Spiral Matrix
+
+### 54. Spiral Matrix
+
 Given a matrix of m x n elements (m rows, n columns), return all elements of the matrix in spiral order.
 
 这个题不要想太深，维持四个变量记录接下来的最大行数和列数，然后按顺序每计数完一行（列）就更新这四个变量即可。
+
 ```java
 public List<Integer> spiralOrder(int[][] matrix) {
     List<Integer> res = new ArrayList<Integer>();
@@ -47,15 +55,18 @@ public List<Integer> spiralOrder(int[][] matrix) {
                 res.add(matrix[rowEnd][j]);
         rowEnd--;
         if (colBegin <= colEnd)
-            for (int j = rowEnd; j >= rowBegin; j --) 
+            for (int j = rowEnd; j >= rowBegin; j --)
                 res.add(matrix[j][colBegin]);
         colBegin++;
     }
     return res;
 }
 ```
-#### 498. Diagonal Traverse
+
+### 498. Diagonal Traverse
+
 这个题目需要考虑清楚边界情况，靠边的时候一共是四种情况，不靠边反而只有两种
+
 ```py
 def findDiagonalOrder(self, matrix):
     """
