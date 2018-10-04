@@ -382,8 +382,89 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 }
 ```
 
+## 取余操作
+
 ### Fast power
 
 ```py
 (a * b) % p = ((a % p) * (b % p)) % p
+```
+
+## Boyer-Moore 投票算法
+
+### 169 & 229. Majority Element I & II
+
+这题目里Majority元素必然出现超过半数次数，那么我们可以用一个逆向逻辑去考虑：
+
+1. 一个非majority元素的话，必然有多于他出现次数的其他元素
+2. 那么如果所有其他元素的出现次数都少于他，那么他就是majority元素
+3. 要点是，数组中从candidate被赋值到count减到0的那一段可以被去除，余下部分的多数元素依然是原数组的多数元素。
+
+229的逻辑和169类似，就不赘述了
+
+```java
+public int majorityElement(int[] num) {
+    int major=num[0], count = 1;
+    for(int i=1; i<num.length;i++) {
+        if (count==0) {
+            count++;
+            major=num[i];
+        } else if(major==num[i]) {
+            count++;
+        } else count--;
+    }
+    return major;
+}
+```
+
+```py
+def majorityElement(self, nums):
+    if not nums:
+        return []
+    count1, count2, candidate1, candidate2 = 0, 0, 0, 1
+    for n in nums:
+        if n == candidate1:
+            count1 += 1
+        elif n == candidate2:
+            count2 += 1
+        elif count1 == 0:
+            candidate1, count1 = n, 1
+        elif count2 == 0:
+            candidate2, count2 = n, 1
+        else:
+            count1, count2 = count1 - 1, count2 - 1
+    return [n for n in (candidate1, candidate2)
+                    if nums.count(n) > len(nums) // 3]
+```
+
+### 233. Number of Digit One
+
+这题目超级蠢，主要考点在思考每一位上1出现次数的逻辑
+
+```java
+int countDigitOne(int n) {
+    int countr = 0;
+    for (long long i = 1; i <= n; i *= 10) {
+        long long divider = i * 10;
+        countr += (n / divider) * i + min(max(n % divider - i + 1, 0LL), i);
+    }
+    return countr;
+}
+```
+
+### 621. Task Scheduler
+
+There is a non-negative cooling interval n that means between two same tasks, there must be at least n intervals that CPU are doing different tasks or just be idle.
+
+这题的逻辑是这样的
+
+1. 模块的次数为任务最大次数减1，模块的长度为n+1，
+2. 最后加上的字母个数为出现次数最多的任务，可能有多个并列
+
+```py
+def leastInterval(self, tasks, N):
+    task_counts = collections.Counter(tasks).values()
+    M = max(task_counts)
+    Mct = task_counts.count(M)
+    return max(len(tasks), (M - 1) * (N + 1) + Mct)
 ```

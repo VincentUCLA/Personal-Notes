@@ -84,7 +84,20 @@ public ListNode swapPairs(ListNode head) {
 }
 ```
 
-## 2. 其他杂题
+## 2. 快慢指针
+
+### 2. Add Two Numbers
+
+Input: (2 > 4 > 3) + (5 > 6 > 4)
+
+Output: 7 > 0 > 8
+
+这个题目的难点在于corner case多而且庞杂，但实际上不需要转换成十进制数字，因为他本身提供的链表就是从小到大的，符合加法的计算习惯，生加即可
+
+```java
+```
+
+## 3. 其他杂题
 
 ### 2. Add Two Numbers
 
