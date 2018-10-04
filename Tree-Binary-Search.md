@@ -271,6 +271,8 @@ The above output corresponds to the 5 unique BST's shown below:
    2     1         2                 3
 ```
 
+这题目的题眼就是BST的性质：每个节点的左子树都比他小，右子树都比他大
+
 ```py
 def generateTrees(self, n):
     if n == 0:

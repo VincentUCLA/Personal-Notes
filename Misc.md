@@ -381,3 +381,9 @@ public int[] maxSlidingWindow(int[] nums, int k) {
     return res;
 }
 ```
+
+### Fast power
+
+```py
+(a * b) % p = ((a % p) * (b % p)) % p
+```

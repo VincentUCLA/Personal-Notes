@@ -57,6 +57,28 @@ class Solution:
 
 基础题，0^x = x，x^x = 0，不上代码了，不难但很基础
 
+### 260. Single Number III
+
+这次是`2n+2`个数字里n个数字出现过两次，两个数字出现过一次
+
+1. 一串数字进行xor操作的话，重复出现的数字就都不存在了，只剩`a^b`了
+2. 求这个`a^b`的最低位1，a跟b在这一位上必然是不同的
+3. 然后把数组里所有这一位为0的数字和为1的数字分别进行xor操作，因为xor的性质出现两次的数字就消失了，只剩下a和b
+
+```py
+def singleNumber(self, nums):
+    xor, a, b = 0, 0, 0
+    for num in nums:
+        xor ^= num
+    mask = xor - (xor & (xor - 1))
+    for num in nums:
+        if num&mask:
+            a ^= num
+        else:
+            b ^= num
+    return [a, b]
+```
+
 ### 268. Missing Number
 
 题目要求说n个数字里包含[0,n+1]每个数字，只是漏掉一个，那么就从0开始每一位异或两次，一个异或角标i，另一个异或值nums[i]，最后再异或一个n，这样我们一共做了2n+1次异或，相当于[0,n+1]每个数字异或了两遍，除了那个漏掉的数字只异或了一遍

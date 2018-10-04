@@ -7,6 +7,7 @@
 ### 26. Remove Duplicates from Sorted Array
 
 Given a sorted array, remove the duplicates in place such that each element appear only once and return the new length.
+
 Do not allocate extra space for another array, you must do this in place with constant memory.
 
 很简单，维持两个指针，都在每次填数字时++，但后面那个指针在每次遇到重复数字时++。
@@ -19,6 +20,28 @@ public int removeDuplicates(int[] nums) {
         else nums[i++] = nums[j++];
     }
     return i;
+}
+```
+
+### 27. Remove Element
+
+Given an array nums and a value val, remove all instances of that value in-place and return the new length.
+
+Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
+
+The order of elements can be changed. It doesn't matter what you leave beyond the new length.
+
+双指针母题，每次遇到需要添加的字符就双指针都向前推进，否则就只推进前指针
+
+```java
+public int removeElement(int[] nums, int val) {
+    int l = 0;
+    for (int i = 0; i<nums.length; i++)
+        if (nums[i] != val){
+            nums[l] = nums[i];
+            l++;
+        }
+    return l;
 }
 ```
 
@@ -226,4 +249,26 @@ public static int trap(int[] height) {
     }
     return water;
 }
+```
+
+## 4. Misc
+
+### 238. Product of Array Except Self
+
+这题目题意不需要解释，实际操作就是从左向右累乘一轮，在累乘之前让输出数组B[i]等于累乘结果，这样他就等于他左侧所有数累乘，然后从右向左再来一轮，他就等于自己左右侧所有数累乘了
+
+```py
+def productExceptSelf(nums):
+    p = 1
+    n = len(nums)
+    output = []
+    for i in range(0,n):
+        output.append(p)
+        p = p * nums[i]
+    p = 1
+    print(output)
+    for i in range(n-1,-1,-1):
+        output[i] = output[i] * p
+        p = p * nums[i]
+    return output
 ```

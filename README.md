@@ -27,6 +27,10 @@ s2.index('w') = 5  # if not found, return -1
 3. 后序
 4. BFS
 
+### BST
+
+左子树 < root < 右子树，使用中序遍历得到的是有序数组
+
 ## Stack & Queues
 
 ### 堆栈与DFS和BFS
@@ -273,6 +277,52 @@ public double findKth(int[] nums1, int[] nums2, int k){
         int[] temp = Arrays.copyOfRange(nums2, pb, l2);
         return findKth(nums1, temp, k ‐ pb);
     }
+}
+```
+
+### 215. Kth Largest Element in an Array
+
+注意这题跟第4题其实是不一样的，这题目数组是未排序的。实际上是Quick sort变形：
+
+1. 每次随机选出一个中值
+2. 把所有数字按照中值筛到左边或者右边
+3. 使用分治，如果中值的位置大于K就只处理左边，否则只处理右边
+
+```java
+public int findKthLargest(int[] nums, int k) {
+    if (nums == null || nums.length == 0) {
+        return -1;
+    }
+    return quickSelect(nums, 0, nums.length - 1, k - 1);
+}
+private int quickSelect(int[] nums, int start, int end, int k) {
+    if (start >= end) {
+        return nums[start];
+    }
+    int left = start;
+    int right = end;
+    int pivot = nums[(start + end) / 2];
+    while (left <= right) {
+        while (left <= right && nums[left] > pivot) {
+            left++;
+        }
+        while (left <= right && nums[right] < pivot) {
+            right--;
+        }
+        if (left <= right) {
+            int temp = nums[left];
+            nums[left] = nums[right];
+            nums[right] = temp;
+            left++;
+            right--;
+        }
+    }
+    if (right >= k && right >= start) {
+        return quickSelect(nums, start, right, k);
+    } else if (left <= k && left <= end) {
+        return quickSelect(nums, left, end, k);
+    }
+    return nums[k];
 }
 ```
 
