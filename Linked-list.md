@@ -86,15 +86,48 @@ public ListNode swapPairs(ListNode head) {
 
 ## 2. 快慢指针
 
-### 2. Add Two Numbers
+### 141 & 142. Linked List Cycle ßI & II
 
-Input: (2 > 4 > 3) + (5 > 6 > 4)
-
-Output: 7 > 0 > 8
-
-这个题目的难点在于corner case多而且庞杂，但实际上不需要转换成十进制数字，因为他本身提供的链表就是从小到大的，符合加法的计算习惯，生加即可
+这俩题快慢指针典型题，1的话就是快慢指针会在环路中相撞
 
 ```java
+public boolean hasCycle(ListNode head) {
+    if(head == null)
+        return false;
+    ListNode slow = head, fast = head.next;
+    while(fast != slow){
+        if(fast==null || fast.next==null)
+            return false;
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+    return true;
+}
+```
+
+找端点这题需要一点思量
+
+1. 假定环路长度是N，环路起点是A
+2. 那么快慢指针相遇时候，慢指针走了A+B，快指针走了2A+2B
+3. 所以推论出来A+B+N=2A+2B，所以N=A+B，那么A+N=A+A+B
+4. 所以再找个第三根指针跟慢指针同步向前走，两者相遇的时候就找到了A
+
+```java
+public ListNode detectCycle(ListNode head) {
+    ListNode slow = head, fast = head;
+    while(fast != null && fast.next != null) {
+        fast = fast.next.next;
+        slow = slow.next;
+        if (slow == fast) {
+            while (head != slow) {
+                head = head.next;
+                slow = slow.next;
+            }
+            return slow;
+        }
+    }
+    return null;
+}
 ```
 
 ## 3. 其他杂题

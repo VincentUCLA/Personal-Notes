@@ -44,9 +44,9 @@ def inorderTraversal(self, root):
             stk.append(root)
             root = root.left
         else:
-            root = root.right
             root = stk.pop()
             ret.append(root.val)
+            root = root.right
     return ret
 ```
 
@@ -330,8 +330,29 @@ Output: [3,1,null,null,2]
    2
 ```
 
-```py
+### 173. Binary Search Tree Iterator
 
+这题就是利用BST的中序遍历性质，先把最左边的都塞进栈里，然后就类似于中序遍历，每次只有从栈里弹出来的元素才把他的右子树塞进去
+
+```py
+def __init__(self, root):
+    self.stack = []
+    while root:
+        self.stack.append(root)
+        root = root.left
+
+# @return a boolean, whether we have a next smallest number
+def hasNext(self):
+    return len(self.stack) > 0
+
+# @return an integer, the next smallest number
+def next(self):
+    node = self.stack.pop()
+    x = node.right
+    while x:
+        self.stack.append(x)
+        x = x.left
+    return node.val
 ```
 
 ### 285. Inorder Successor in BST
