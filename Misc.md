@@ -1,5 +1,7 @@
 # Misc
 
+## 1. 正则表达式和各种String
+
 ### 8. String to Integer (atoi)
 
 1. 用trim()函数删除左右的空格，如果剩余字符串为空则返回0；
@@ -27,25 +29,7 @@ def largestNumber(self, num):
     return ''.join(num).lstrip('0') or '0'
 ```
 
-### 75. Sort Color
-
-这个做法颇为鸡贼，\[0, i)部分是0，\[i, j)部分是1，\[j, n)部分是2
-
-所以呢，2就一路向后推，遇到小于2的数字就增加j，等于0的时候就增加i
-
-```py
-def sortColors(self, nums):
-    i = j = 0
-    for k in range(0, len(nums)):
-        v = nums[k]
-        nums[k] = 2
-        if v < 2:
-            nums[j] = 1
-            j += 1
-        if v == 0:
-            nums[i] = 0
-            i += 1
-```
+## 2. Heap
 
 ### 347. Top K Frequent Elements
 
@@ -66,6 +50,81 @@ def topKFrequent(self, nums, k):
         ret.append(temp[1])
     return ret
 ```
+
+### Given unsorted array of int, each element is the length of a rod, return the minimum total cost of combining all rods
+
+难度2/5，这题目最简单的办法很显然是最小堆，不证明了，每次从最小堆里提出来两根棍子接一起，然后把接起来的新棍子丢最小堆里，每次操作的复杂度是O(logn)，所以总时间复杂度就是O(nlogn)，空间复杂度很显然是O(n)
+
+```java
+int minCost(int len[], int n) {
+    int cost = 0;
+    struct MinHeap* minHeap = createAndBuildMinHeap(len, n);
+    while (!isSizeOne(minHeap)) {
+        int min     = extractMin(minHeap);
+        int sec_min = extractMin(minHeap);
+        cost += (min + sec_min);
+        insertMinHeap(minHeap, min+sec_min);
+    }
+    return cost;
+}
+```
+
+## 3. 取余操作
+
+### Fast power
+
+```py
+(a * b) % p = ((a % p) * (b % p)) % p
+```
+
+## 4. Boyer-Moore 投票算法
+
+### 169 & 229. Majority Element I & II
+
+这题目里Majority元素必然出现超过半数次数，那么我们可以用一个逆向逻辑去考虑：
+
+1. 一个非majority元素的话，必然有多于他出现次数的其他元素
+2. 那么如果所有其他元素的出现次数都少于他，那么他就是majority元素
+3. 要点是，数组中从candidate被赋值到count减到0的那一段可以被去除，余下部分的多数元素依然是原数组的多数元素。
+
+229的逻辑和169类似，就不赘述了
+
+```java
+public int majorityElement(int[] num) {
+    int major=num[0], count = 1;
+    for(int i=1; i<num.length;i++) {
+        if (count==0) {
+            count++;
+            major=num[i];
+        } else if(major==num[i]) {
+            count++;
+        } else count--;
+    }
+    return major;
+}
+```
+
+```py
+def majorityElement(self, nums):
+    if not nums:
+        return []
+    count1, count2, candidate1, candidate2 = 0, 0, 0, 1
+    for n in nums:
+        if n == candidate1:
+            count1 += 1
+        elif n == candidate2:
+            count2 += 1
+        elif count1 == 0:
+            candidate1, count1 = n, 1
+        elif count2 == 0:
+            candidate2, count2 = n, 1
+        else:
+            count1, count2 = count1 - 1, count2 - 1
+    return [n for n in (candidate1, candidate2)
+                    if nums.count(n) > len(nums) // 3]
+```
+
+## 5. 无法归类的各种怪题
 
 ### 189. Rotate Array
 
@@ -166,96 +225,6 @@ class MinStack {
 }
 ```
 
-### Ternary Expression to Binary Tree
-
-这题目leetcode里没有，可能因为太简单？两个解法，一个是栈解法：
-
-1. 一开始推进去一个树节点
-2. 每次向右推两格
-    1. 遇到问号呢，就把当前栈顶节点的左子树加上这个节点
-    2. 遇到冒号的话，先往外弹一个，然后如果遇到右子树满着的节点，一路从栈往外弹，直到遇到右子树为空的节点
-    3. 每次循环的最后把节点推进去
-
-另一个是递归，问号后面的【整个字符串】是左子树，冒号后面的【整个字符串】是右子树呗
-
-```java
-public TreeNode convert(String expr) {
-    char[] exp = expr.toCharArray();
-    if (exp.length == 0)
-        return null;
-    TreeNode root = new TreeNode(exp[0]);
-    Stack<TreeNode> stack = new Stack<>();
-    stack.push(root);
-    for (int i = 1; i < exp.length; i += 2) {
-        TreeNode node = new TreeNode(exp[i + 1]);
-        if (exp[i] == '?')
-            stack.peek().left = node;
-        if (exp[i] == ':') {
-            stack.pop();
-            while (stack.peek().right != null)
-                stack.pop();
-            stack.peek().right = node;
-        }
-        stack.push(node);
-    }
-    return root;
-}
-
-Node convertExpression(char[] expression, int i)
-{
-    if (i >= expression.length)
-        return null;
-    Node root = new Node(expression[i]);
-    ++i;
-    if (i < expression.length && expression[i]=='?')
-        root.left = convertExpression(expression, i+1);
-    else if (i < expression.length)
-        root.right = convertExpression(expression, i+1);
-    return root;
-}
-```
-
-### 41. First Missing Positive
-
-难度2/5，时间复杂度O(n)，空间复杂度O(1)
-
-这题目不算难，首先假定n个数字里第一个漏掉的正数不可能大于n，所以咱忽略掉所有大于n和小于0的数字，剩余数字就排列到原位就可以，然后再遍历一遍已经排布过的数组即可
-
-```py
-def swap(self, arr, a, b):
-    c = arr[a]
-    arr[a] = arr[b]
-    arr[b] = c
-
-def firstMissingPositive(self, nums):
-    l = len(nums)
-    for i in range(0, l):
-        while 0 < nums[i] <= l and nums[nums[i] - 1] != nums[i]:
-            self.swap(nums, i, nums[i] - 1)
-    for i in range(0, l):
-        if nums[i] != i+1:
-            return i+1
-    return l+1
-```
-
-### Given unsorted array of int, each element is the length of a rod, return the minimum total cost of combining all rods
-
-难度2/5，这题目最简单的办法很显然是最小堆，不证明了，每次从最小堆里提出来两根棍子接一起，然后把接起来的新棍子丢最小堆里，每次操作的复杂度是O(logn)，所以总时间复杂度就是O(nlogn)，空间复杂度很显然是O(n)
-
-```java
-int minCost(int len[], int n) {
-    int cost = 0;
-    struct MinHeap* minHeap = createAndBuildMinHeap(len, n);
-    while (!isSizeOne(minHeap)) {
-        int min     = extractMin(minHeap);
-        int sec_min = extractMin(minHeap);
-        cost += (min + sec_min);
-        insertMinHeap(minHeap, min+sec_min);
-    }
-    return cost;
-}
-```
-
 ### 493. Reverse Pairs
 
 这题目太离谱了，居然连BST都会超时，可以算leetcode上最难最扯淡的几个题目了。数组树太麻烦了，咱用简单算法
@@ -353,88 +322,6 @@ def containsNearbyAlmostDuplicate(self, nums, k, t):
         if i >= k:
             del bucket[nums[i-k] // w]
     return False
-```
-
-### 239. Sliding Window Maximum
-
-当我们遇到新的数时，将新的数和双向队列的末尾比较，如果末尾比新数小，则把末尾扔掉，直到该队列的末尾比新数大或者队列为空的时候才住手。这样，我们可以保证队列里的元素是从头到尾降序的，由于队列里只有窗口内的数，所以他们其实就是窗口内第一大，第二大，第三大...的数。
-
-保持队列里只有窗口内数的方法是每来一个新的把窗口最左边的扔掉，然后把新的加进去。然而由于我们在加新数的时候，已经把很多没用的数给扔了，这样队列头部的数并不一定是窗口最左边的数。这里的技巧是，我们队列中存的是那个数在原数组中的下标，这样我们既可以直到这个数的值，也可以知道该数是不是窗口最左边的数。
-
-为什么时间复杂度是O(N)呢？因为每个数只可能被操作最多两次，一次是加入队列的时候，一次是因为有别的更大数在后面，所以被扔掉，或者因为出了窗口而被扔掉。
-
-```java
-public int[] maxSlidingWindow(int[] nums, int k) {
-    if(nums == null || nums.length == 0) return new int[0];
-    LinkedList<Integer> deque = new LinkedList<Integer>();
-    int[] res = new int[nums.length + 1 - k];
-    for(int i = 0; i < nums.length; i++){
-        // 每当新数进来时，如果发现队列头部的数的下标，是窗口最左边数的下标，则扔掉`
-        if(!deque.isEmpty() && deque.peekFirst() == i - k) deque.poll();
-        // 把队列尾部所有比新数小的都扔掉，保证队列是降序的
-        while(!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) deque.removeLast();
-        // 加入新数
-        deque.offerLast(i);
-        // 队列头部就是该窗口内第一大的
-        if((i + 1) >= k) res[i + 1 - k] = nums[deque.peek()];
-    }
-    return res;
-}
-```
-
-## 取余操作
-
-### Fast power
-
-```py
-(a * b) % p = ((a % p) * (b % p)) % p
-```
-
-## Boyer-Moore 投票算法
-
-### 169 & 229. Majority Element I & II
-
-这题目里Majority元素必然出现超过半数次数，那么我们可以用一个逆向逻辑去考虑：
-
-1. 一个非majority元素的话，必然有多于他出现次数的其他元素
-2. 那么如果所有其他元素的出现次数都少于他，那么他就是majority元素
-3. 要点是，数组中从candidate被赋值到count减到0的那一段可以被去除，余下部分的多数元素依然是原数组的多数元素。
-
-229的逻辑和169类似，就不赘述了
-
-```java
-public int majorityElement(int[] num) {
-    int major=num[0], count = 1;
-    for(int i=1; i<num.length;i++) {
-        if (count==0) {
-            count++;
-            major=num[i];
-        } else if(major==num[i]) {
-            count++;
-        } else count--;
-    }
-    return major;
-}
-```
-
-```py
-def majorityElement(self, nums):
-    if not nums:
-        return []
-    count1, count2, candidate1, candidate2 = 0, 0, 0, 1
-    for n in nums:
-        if n == candidate1:
-            count1 += 1
-        elif n == candidate2:
-            count2 += 1
-        elif count1 == 0:
-            candidate1, count1 = n, 1
-        elif count2 == 0:
-            candidate2, count2 = n, 1
-        else:
-            count1, count2 = count1 - 1, count2 - 1
-    return [n for n in (candidate1, candidate2)
-                    if nums.count(n) > len(nums) // 3]
 ```
 
 ### 233. Number of Digit One

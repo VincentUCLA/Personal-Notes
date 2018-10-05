@@ -45,6 +45,49 @@ public int removeElement(int[] nums, int val) {
 }
 ```
 
+### 75. Sort Color
+
+这个做法颇为鸡贼，\[0, i)部分是0，\[i, j)部分是1，\[j, n)部分是2
+
+所以呢，2就一路向后推，遇到小于2的数字就增加j，等于0的时候就增加i
+
+```py
+def sortColors(self, nums):
+    i = j = 0
+    for k in range(0, len(nums)):
+        v = nums[k]
+        nums[k] = 2
+        if v < 2:
+            nums[j] = 1
+            j += 1
+        if v == 0:
+            nums[i] = 0
+            i += 1
+```
+
+### 41. First Missing Positive
+
+难度2/5，时间复杂度O(n)，空间复杂度O(1)
+
+这题目不算难，首先假定n个数字里第一个漏掉的正数不可能大于n，所以咱忽略掉所有大于n和小于0的数字，剩余数字就排列到原位就可以，然后再遍历一遍已经排布过的数组即可
+
+```py
+def swap(self, arr, a, b):
+    c = arr[a]
+    arr[a] = arr[b]
+    arr[b] = c
+
+def firstMissingPositive(self, nums):
+    l = len(nums)
+    for i in range(0, l):
+        while 0 < nums[i] <= l and nums[nums[i] - 1] != nums[i]:
+            self.swap(nums, i, nums[i] - 1)
+    for i in range(0, l):
+        if nums[i] != i+1:
+            return i+1
+    return l+1
+```
+
 ## 2. 双指针窗口操作
 
 双指针配合哈希表是字符串操作里极为陈腔滥调的题目，需要深入掌握
@@ -124,6 +167,33 @@ public List<Integer> findAnagrams(String s, String p) {
         if (right - left == cp.length && ++hash[cs[left++] - 'a'] >= 1) need++;
     }
     return ret;
+}
+```
+
+### 239. Sliding Window Maximum
+
+当我们遇到新的数时，将新的数和双向队列的末尾比较，如果末尾比新数小，则把末尾扔掉，直到该队列的末尾比新数大或者队列为空的时候才住手。这样，我们可以保证队列里的元素是从头到尾降序的，由于队列里只有窗口内的数，所以他们其实就是窗口内第一大，第二大，第三大...的数。
+
+保持队列里只有窗口内数的方法是每来一个新的把窗口最左边的扔掉，然后把新的加进去。然而由于我们在加新数的时候，已经把很多没用的数给扔了，这样队列头部的数并不一定是窗口最左边的数。这里的技巧是，我们队列中存的是那个数在原数组中的下标，这样我们既可以直到这个数的值，也可以知道该数是不是窗口最左边的数。
+
+为什么时间复杂度是O(N)呢？因为每个数只可能被操作最多两次，一次是加入队列的时候，一次是因为有别的更大数在后面，所以被扔掉，或者因为出了窗口而被扔掉。
+
+```java
+public int[] maxSlidingWindow(int[] nums, int k) {
+    if(nums == null || nums.length == 0) return new int[0];
+    LinkedList<Integer> deque = new LinkedList<Integer>();
+    int[] res = new int[nums.length + 1 - k];
+    for(int i = 0; i < nums.length; i++){
+        // 每当新数进来时，如果发现队列头部的数的下标，是窗口最左边数的下标，则扔掉`
+        if(!deque.isEmpty() && deque.peekFirst() == i - k) deque.poll();
+        // 把队列尾部所有比新数小的都扔掉，保证队列是降序的
+        while(!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) deque.removeLast();
+        // 加入新数
+        deque.offerLast(i);
+        // 队列头部就是该窗口内第一大的
+        if((i + 1) >= k) res[i + 1 - k] = nums[deque.peek()];
+    }
+    return res;
 }
 ```
 

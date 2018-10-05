@@ -50,6 +50,21 @@ def inorderTraversal(self, root):
     return ret
 ```
 
+### 226. Invert Binary Tree
+
+基础题，要注意速度
+
+```java
+public TreeNode invertTree(TreeNode root) {
+    if (root == null)
+        return root;
+    TreeNode temp = invertTree(root.left);
+    root.left = invertTree(root.right);
+    root.right = temp;
+    return root;
+}
+```
+
 ### 105 & 106. Construct Binary Tree from Preorder and Inorder Traversal (Inorder and Postorder Traversal)
 
 这题目实际是在考察对前序和中序遍历的理解，前序遍历的话最左侧的项是root，以此去寻找中序遍历数组中的root，中序遍历数组里root的左边是左子树，右边是右子树，注意python里`pop(0)`是弹出最左侧，`pop()`是弹出最右侧
@@ -99,24 +114,116 @@ public int minDepth(TreeNode root) {
 
 ### 114. Flatten Binary Tree to Linked List
 
-这题其实没说要你把二叉树弄成啥样……所以弄个前中后序遍历都可，这个解法就是用stack实现前序遍历而已
+### 297. Serialize and Deserialize Binary Tree
+
+这题其实没说要你把二叉树弄成啥样……这个解法就是复杂版前序遍历而已
 
 ```py
-def flatten(self, root):
-    if not root: return None
-    cur = [root]
-    while cur:
-        node = cur.pop()
-        if node.right: cur.append(node.right)
-        if node.left: cur.append(node.left)
-        if cur:
-            node.right = cur[-1]
-        node.left = None
+def serialize(self, root):
+    def doit(node):
+        if node:
+            vals.append(node.val)
+            doit(node.left)
+            doit(node.right)
+        else:
+            vals.append('#')
+    vals = []
+    doit(root)
+    return vals
+
+def deserialize(self, data):
+    def doit():
+        val = next(vals)
+        if val == '#':
+            return None
+        else:
+            node = TreeNode(val)
+            node.left = doit()
+            node.right = doit()
+            return node
+    vals = iter(data)
+    return doit()
 ```
 
-### 124. Binary Tree Maximum Path Sum
+### Ternary Expression to Binary Tree
 
-这题名为难题实际上没多难……
+这题目leetcode里没有，可能因为太简单？两个解法，一个是栈解法：
+
+1. 一开始推进去一个树节点
+2. 每次向右推两格
+    1. 遇到问号呢，就把当前栈顶节点的左子树加上这个节点
+    2. 遇到冒号的话，先往外弹一个，然后如果遇到右子树满着的节点，一路从栈往外弹，直到遇到右子树为空的节点
+    3. 每次循环的最后把节点推进去
+
+另一个是递归，问号后面的【整个字符串】是左子树，冒号后面的【整个字符串】是右子树呗
+
+```java
+public TreeNode convert(String expr) {
+    char[] exp = expr.toCharArray();
+    if (exp.length == 0)
+        return null;
+    TreeNode root = new TreeNode(exp[0]);
+    Stack<TreeNode> stack = new Stack<>();
+    stack.push(root);
+    for (int i = 1; i < exp.length; i += 2) {
+        TreeNode node = new TreeNode(exp[i + 1]);
+        if (exp[i] == '?')
+            stack.peek().left = node;
+        if (exp[i] == ':') {
+            stack.pop();
+            while (stack.peek().right != null)
+                stack.pop();
+            stack.peek().right = node;
+        }
+        stack.push(node);
+    }
+    return root;
+}
+
+Node convertExpression(char[] expression, int i) {
+    if (i >= expression.length)
+        return null;
+    Node root = new Node(expression[i]);
+    ++i;
+    if (i < expression.length && expression[i]=='?')
+        root.left = convertExpression(expression, i+1);
+    else if (i < expression.length)
+        root.right = convertExpression(expression, i+1);
+    return root;
+}
+```
+
+### 572. Subtree of Another Tree
+
+这题其实没说要你把二叉树弄成啥样……这个解法就是复杂版前序遍历而已
+
+```py
+def isSubtree(self, s, t):
+    def helper(s, t, root):
+        if not s and not t:
+            return True
+        if not s or not t:
+            return False
+        if s.val == t.val:
+            return (helper(s.left, t.left, False) and helper(s.right, t.right, False)) or (helper(s.left, t, True) or helper(s.right, t, True))
+        else:
+            if root:
+                return helper(s.left, t, True) or helper(s.right, t, True)
+            else:
+                return False
+    return helper(s, t, True)
+```
+
+### 104 & 124. Maximum Depth of Binary Tree & Binary Tree Maximum Path Sum
+
+这题名为难题实际上没多难……重点是体会递归关系
+
+```py
+def maxDepth(self, root):
+    if root is None:
+        return 0
+    return 1 + max(self.maxDepth(root.left), self.maxDepth(root.right))
+```
 
 ```java
 int maxValue;
@@ -308,6 +415,20 @@ public int numTrees(int n) {
 }
 ```
 
+### 98. Validate Binary Search Tree
+
+这题用中序遍历简直弱智，所以最好别这么写
+
+```py
+def isValidBST(self, root):
+    return self.validity(root, -2**32, 2**32)
+
+def validity(self, root, left, right):
+    if not root: return True
+    if root.val >= right or root.val <= left: return False
+    return self.validity(root.left, left, root.val) and self.validity(root.right, root.val, right)
+```
+
 ### 99. Recover Binary Search Tree
 
 Two elements of a binary search tree (BST) are swapped by mistake. Recover the tree without changing its structure.
@@ -328,6 +449,43 @@ Output: [3,1,null,null,2]
  1
   \
    2
+```
+
+### 108 & 109. Convert Sorted Array / List to Binary Search Tree
+
+这俩题目一样的套路，分治法，找到中点为root，然后递归左侧构建左子树，递归右侧构建右子树
+
+```java
+public TreeNode sortedArrayToBST(int[] nums) {
+    if (nums.length == 0)
+        return null;
+    else {
+        int mid = nums[nums.length / 2];
+        TreeNode temp = new TreeNode(mid);
+        temp.left = sortedArrayToBST(Arrays.copyOfRange(nums, 0, nums.length / 2));
+        temp.right = sortedArrayToBST(Arrays.copyOfRange(nums, nums.length / 2 + 1, nums.length));
+        return temp;
+    }
+}
+```
+
+```py
+def sortedListToBST(self, head):
+    return self.listToBST(head, None)
+
+def listToBST(self, head, tail):
+    if head == tail:
+        return None
+    else:
+        slow = head
+        fast = head
+        while fast != tail and fast.next != tail:
+            slow = slow.next
+            fast = fast.next.next
+        root = TreeNode(slow.val)
+        root.left = self.listToBST(head, slow)
+        root.right = self.listToBST(slow.next, tail)
+        return root
 ```
 
 ### 173. Binary Search Tree Iterator
@@ -446,4 +604,4 @@ def cloneGraph(self, node):
     return nodeCopy
 ```
 
-#### PocketGem. All paths from node to node
+### PocketGem. All paths from node to node
