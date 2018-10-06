@@ -124,7 +124,89 @@ def majorityElement(self, nums):
                     if nums.count(n) > len(nums) // 3]
 ```
 
-## 5. 无法归类的各种怪题
+## 5. Interval问题
+
+### 56 & 57. Merge / Insert Intervals
+
+这俩题目大同小异，无非是先排序，再判断边界条件而已
+
+```py
+def merge(self, intervals):
+    out = []
+    for i in sorted(intervals, key=lambda i: i.start):
+        if out and i.start <= out[-1].end:
+            out[-1].end = max(out[-1].end, i.end)
+        else:
+            out += i,
+    return out
+```
+
+```py
+def insert(self, intervals, newInterval):
+    out = []
+    intervals.append(newInterval)
+    for i in sorted(intervals, key=lambda i: i.start):
+        if out and i.start <= out[-1].end:
+            out[-1].end = max(out[-1].end, i.end)
+        else:
+            out += i,
+    return out
+```
+
+## 6. Stack & Queue
+
+### 155. min stack
+
+这个东西的难点就是如何记录【某一时刻的最小值】，那很简单，每次最小值变得更小，就往栈里连推两次，第一次推最小值，第二次推x；每次最小值变得更大的时候呢，从栈里连弹两次，第一次弹出来的是x，第二次弹出来的是最小值
+
+```java
+class MinStack {
+    int min = Integer.MAX_VALUE;
+    Stack<Integer> stack = new Stack<Integer>();
+    public void push(int x) {
+        if(x <= min){
+            stack.push(min);
+            min=x;
+        }
+        stack.push(x);
+    }
+    public void pop() {
+        if(stack.pop() == min)
+            min=stack.pop();
+    }
+    public int top() { return stack.peek();}
+    public int getMin() { return min;}
+}
+```
+
+## 7. 奇怪的排序
+
+### 220. Contains Duplicate III
+
+坐标差不能大于k，值差不能大于t
+
+如果t=0的话其实和LC219是同一个题目，加入t的话就是利用桶排序，每个桶大小为t+1，每经历过一轮k，就删除bucket里i-k所对应的值，这样就可以避免坐标差超过k的情况出现，而值差则是利用桶排序的性质，每一轮中在m桶里的数字很显然值差小于t，两侧桶里的数字经过恰当的测试值差也会小于t
+
+```py
+def containsNearbyAlmostDuplicate(self, nums, k, t):
+    bucket = {}
+    if t < 0: return False
+    w, n = t + 1, len(nums)
+    for i in range(0, n):
+        m = nums[i] // w
+        if m in bucket:
+            return True
+        if m - 1 in bucket and abs(nums[i] - bucket[m - 1]) < w:
+            return True
+        if m + 1 in bucket and abs(nums[i] - bucket[m + 1]) < w:
+            return True
+        bucket[m] = nums[i]
+        if i >= k:
+            del bucket[nums[i-k] // w]
+    return False
+```
+
+## 8. 无法归类的各种怪题
 
 ### 189. Rotate Array
 
@@ -201,64 +283,6 @@ class Trie:
         return True
 ```
 
-### 155. min stack
-
-这个东西的难点就是如何记录【某一时刻的最小值】，那很简单，每次最小值变得更小，就往栈里连推两次，第一次推最小值，第二次推x；每次最小值变得更大的时候呢，从栈里连弹两次，第一次弹出来的是x，第二次弹出来的是最小值
-
-```java
-class MinStack {
-    int min = Integer.MAX_VALUE;
-    Stack<Integer> stack = new Stack<Integer>();
-    public void push(int x) {
-        if(x <= min){
-            stack.push(min);
-            min=x;
-        }
-        stack.push(x);
-    }
-    public void pop() {
-        if(stack.pop() == min)
-            min=stack.pop();
-    }
-    public int top() { return stack.peek();}
-    public int getMin() { return min;}
-}
-```
-
-### 493. Reverse Pairs
-
-这题目太离谱了，居然连BST都会超时，可以算leetcode上最难最扯淡的几个题目了。数组树太麻烦了，咱用简单算法
-
-使用合并排序的思想，学名叫分割重现关系(Partition Recurrence Relation)，用式子表示是T(i, j) = T(i, m) + T(m+1, j) + C。这里的C就是处理合并两个部分的子问题，用文字来描述就是“已知翻转对的两个数字分别在子数组nums[i, m]和nums[m+1, j]之中，求满足要求的翻转对的个数”
-
-在合并排序的递归函数中，对于有序的两个子数组进行统计翻转对的个数，然后再逐层返回，这就实现了上述的分割重现关系的思想。
-
-```py
-def __init__(self):
-    self.cnt = 0
-def reversePairs(self, nums):
-    def msort(lst):
-        # merge sort body
-        L = len(lst)
-        if L <= 1:                          # base case
-            return lst
-        else:                               # recursive case
-            return merger(msort(lst[:int(L/2)]), msort(lst[int(L/2):]))
-    def merger(left, right):
-        # merger
-        l, r = 0, 0                         # increase l and r iteratively
-        while l < len(left) and r < len(right):
-            if left[l] <= 2*right[r]:
-                l += 1
-            else:
-                self.cnt += len(left)-l     # add here
-                r += 1
-        return sorted(left+right)           # I can't avoid TLE without timsort...
-
-    msort(nums)
-    return self.cnt
-```
-
 ### 204. Count Primes
 
 埃拉托斯特尼筛法，不难，但这个例程可以学到不少python奇形怪状的语法
@@ -272,56 +296,6 @@ def countPrimes(self, n):
         if primes[i]:
             primes[i*i:n:i] = [False] * len(primes[i*i:n:i])
     return sum(primes)
-```
-
-### 241. Different Ways to Add Parentheses
-
-这题目看代码就好，讲解也讲不明白……实际上是个简单的分治
-
-```py
-def diffWaysToCompute(self, input):
-    res = []
-    for i in range(0, len(input)):
-        c = input[i]
-        if c == '+' or c == '-' or c == '*':
-            a, b = input[0:i], input[i+1:]
-            al, bl = self.diffWaysToCompute(a), self.diffWaysToCompute(b)
-            for x in al:
-                for y in bl:
-                    if c == '-':
-                        res.append(x-y)
-                    elif c == '+':
-                        res.append(x+y)
-                    elif c == '*':
-                        res.append(x*y)
-    if len(res) == 0:
-        res.append(int(input))
-    return res
-```
-
-### 220. Contains Duplicate III
-
-坐标差不能大于k，值差不能大于t
-
-如果t=0的话其实和LC219是同一个题目，加入t的话就是利用桶排序，每个桶大小为t+1，每经历过一轮k，就删除bucket里i-k所对应的值，这样就可以避免坐标差超过k的情况出现，而值差则是利用桶排序的性质，每一轮中在m桶里的数字很显然值差小于t，两侧桶里的数字经过恰当的测试值差也会小于t
-
-```py
-def containsNearbyAlmostDuplicate(self, nums, k, t):
-    bucket = {}
-    if t < 0: return False
-    w, n = t + 1, len(nums)
-    for i in range(0, n):
-        m = nums[i] // w
-        if m in bucket:
-            return True
-        if m - 1 in bucket and abs(nums[i] - bucket[m - 1]) < w:
-            return True
-        if m + 1 in bucket and abs(nums[i] - bucket[m + 1]) < w:
-            return True
-        bucket[m] = nums[i]
-        if i >= k:
-            del bucket[nums[i-k] // w]
-    return False
 ```
 
 ### 233. Number of Digit One

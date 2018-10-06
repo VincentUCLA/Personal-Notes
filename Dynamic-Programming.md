@@ -2,138 +2,7 @@
 
 动态规划看书也看不懂，反正书上也是用例子来讲解，还不如实际做两道题就领悟的快。动态规划既可以理解成带记忆的递归，也可以理解成数学归纳法。
 
-## 例题
-
-### 62. Unique Paths
-
-A robot is located at the top-left corner of a m x n grid. The robot can only move either down or right at any point in time. The robot is trying to reach the bottom-right corner of the grid. How many possible unique paths are there? Note: m and n will be at most 100.
-
-Solution: 这个题目是二维动态规划的“母题”，很简单，想清楚2*2的情况就可以做出来。
-
-ps: 高中讲数学归纳法的意义就在这了，动态规划的思想跟数学归纳法很相似，只需要证明两个情况下（0->1, x->x+1）状态转移方程成立即可。
-
-```java
-public int uniquePaths(int m, int n) {
-    int[][] dp = new int[m][n];
-    for (int i = 0; i<m; i++)
-        dp[i][0] = 1;
-    for (int i = 0; i<n; i++)
-        dp[0][i] = 1;
-    for (int i = 1; i<m; i++)
-        for (int j = 1; j<n; j++)
-            dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
-    return dp[m - 1][n - 1];
-}
-```
-
-### 97. Interleaving String
-
-Given s1, s2, s3, find whether s3 is formed by the interleaving of s1 and s2.
-
-Solution: 二维DP，`dp[i][j]`意味着`s1[:i]`和`s2[:j]`可以构成`s3[i+j]`
-
-```py
-def isInterleave(self, s1, s2, s3):
-     edge cases
-    if s1 == '':
-        return s2 == s3
-    if s2 == '':
-        return s1 == s3
-    if s3 == '':
-        return s1 == s2 == ''
-    len1, len2, len3 = len(s1), len(s2), len(s3)
-    if len3 != len1 + len2:
-        return False
-
-     prepare DP matrix and base case
-    dp = [[0] * (len2 + 1) for _ in range(len1 + 1)]
-    for i in range(1, len1 + 1):
-        dp[i][0] = s1[:i] == s3[:i]
-    for j in range(1, len2 + 1):
-        dp[0][j] = s2[:j] == s3[:j]
-    for i in range(1, len1 + 1):
-        for j in range(1, len2 + 1):
-            dp[i][j] = dp[i - 1][j] and s3[i + j - 1] == s1[i - 1] \
-                    or dp[i][j - 1] and s3[i + j - 1] == s2[j - 1]
-    return dp[len1][len2]
-```
-
-### 10. Regular Expression Matching
-
-Implement regular expression matching with support for '.' and '*'.
-
-'.' Matches any single character.
-
-'*' Matches zero or more of the preceding element.
-
-The matching should cover the entire input string (not partial).
-
-使用动态规划。字符串为s，正则表达式为p。
-
-预处理：用dp[i][j]表示s串的前i个字符和p串的前j个字符是否匹配。dp[0][0] = true；
-
-如果p[i]为'\*'，则dp[0][i] 需要p一直为'\*'才为真
-
-1. 如果s[i] == p[j]或p[j] == '\.'，dp[i+1][j+1] = dp[i][j]；
-2. 如果p[j] == '\*'
-    1. 如果s[i] == p[j-1] 或p[j1] == '\.'，dp[i+1][j+1]取下列三者的或
-        1. dp[i][j+1] （a*代表多个a）
-        2. dp[i+1][j] （a*代表一个a）
-        3. dp[i+1][j-1] （a*不代表a）
-    2. 否则的话dp[i+1][j+1] = dp[i+1][j1]
-
-```java
-public boolean isMatch(String s, String p) {
-    if (s == null || p == null)
-        return false;
-    boolean [][] dp = new boolean[s.length()+1][p.length()+1];
-    dp[0][0] = true;
-    for (int i = 0; i<p.length(); i++)
-        if (p.charAt(i) == '*' && dp[0][i - 1])
-            dp[0][i + 1] = true;
-    for (int i = 0; i<s.length(); i++)
-        for (int j = 0; j<p.length(); j++){
-            if (s.charAt(i) == p.charAt(j) || p.charAt(j) == '.')
-                dp[i+1][j+1] = dp[i][j];
-            else if (p.charAt(j) == '*') {
-                if (s.charAt(i) == p.charAt(j-1) || p.charAt(j-1) == '.')
-                    dp[i+1][j+1] = dp[i+1][j-1] || dp[i+1][j] || dp[i][j+1];
-                else
-                    dp[i+1][j+1] = dp[i+1][j-1];
-            }
-        }
-    return dp[s.length()][p.length()];
-}
-```
-
-### 44. Wildcard Matching
-
-Implement wildcard pattern matching with support for '?' and '\*'.
-
-'?' Matches any single character.
-
-'\*' Matches any sequence of characters (including the empty sequence).
-
-The matching should cover the entire input string (not partial).
-
-这题和第10题几乎完全一样，只是关键字略有不同
-
-```java
-public boolean isMatch(String s, String p) {
-    boolean[][] dp = new boolean[s.length()+1][p.length()+1];
-    dp[0][0] = true;
-    for (int i = 1; i <= p.length(); i++)
-        dp[0][i] = p.charAt(i-1) == '*' && dp[0][i-1];
-    for (int i = 0; i<s.length(); i++)
-        for (int j = 0; j<p.length(); j++){
-            if (s.charAt(i) == p.charAt(j) || p.charAt(j) == '?')
-                dp[i+1][j+1] = dp[i][j];
-            else if (p.charAt(j) == '*')
-                dp[i+1][j+1] = dp[i+1][j] || dp[i][j+1];
-        }
-    return dp[s.length()][p.length()];
-}
-```
+## 1. 一维DP
 
 ### 152. Maximum Product Subarray
 
@@ -155,6 +24,37 @@ def maxProduct(self, nums):
 
 ### 139. Word Break I
 
+Given a non-empty string s and a dictionary wordDict containing a list of non-empty words, determine if s can be segmented into a space-separated sequence of one or more dictionary words.
+
+Note:
+
+- The same word in the dictionary may be reused multiple times in the segmentation.
+- You may assume the dictionary does not contain duplicate words.
+
+Example 1:
+
+```md
+Input: s = "leetcode", wordDict = ["leet", "code"]
+Output: true
+Explanation: Return true because "leetcode" can be segmented as "leet code".
+```
+
+Example 2:
+
+```md
+Input: s = "applepenapple", wordDict = ["apple", "pen"]
+Output: true
+Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
+             Note that you are allowed to reuse a dictionary word.
+```
+
+Example 3:
+
+```md
+Input: s = "catsandog", wordDict = ["cats", "dog", "sand", "and", "cat"]
+Output: false
+```
+
 可能是比较简单的动态规划题目，要注意下标变换
 
 ```py
@@ -167,6 +67,51 @@ def wordBreak(self, s, wordDict):
             if w == s[i-lw+1:i+1] and (dp[i-lw] or i-lw == -1):
                 dp[i] = True
     return dp[-1]
+```
+
+### 91. Decode Ways
+
+A message containing letters from A-Z is being encoded to numbers using the following mapping:
+
+```md
+'A' -> 1
+'B' -> 2
+...
+'Z' -> 26
+Given a non-empty string containing only digits, determine the total number of ways to decode it.
+```
+
+Example 1:
+
+```md
+Input: "12"
+Output: 2
+Explanation: It could be decoded as "AB" (1 2) or "L" (12).
+```
+
+Example 2:
+
+```md
+Input: "226"
+Output: 3
+Explanation: It could be decoded as "BZ" (2 26), "VF" (22 6), or "BBF" (2 2 6).
+```
+
+可能是比较简单的动态规划题目，考虑两个情况即可
+
+```py
+def numDecodings(self, s):
+    # dp[i] = dp[i-1] if s[i] != "0"
+    #       + dp[i-2] if "09" < s[i-2:i] < "27"
+    if s == "": return 0
+    dp = [0 for x in range(len(s)+1)]
+    dp[0] = 1
+    for i in range(1, len(s)+1):
+        if s[i-1] != "0":
+            dp[i] += dp[i-1]
+        if i != 1 and s[i-2:i] < "27" and s[i-2:i] > "09":  # "01"ways = 0
+            dp[i] += dp[i-2]
+    return dp[len(s)]
 ```
 
 ### 300. Longest Increasing Subsequence
@@ -233,4 +178,196 @@ def findTargetSumWays(self, nums, S):
                 nextdp[j - i] += dp[j]
         dp = nextdp
     return dp[sumN + S]
+```
+
+## 2. 二维DP
+
+### 62. Unique Paths
+
+A robot is located at the top-left corner of a m x n grid. The robot can only move either down or right at any point in time. The robot is trying to reach the bottom-right corner of the grid. How many possible unique paths are there? Note: m and n will be at most 100.
+
+Solution: 这个题目是二维动态规划的“母题”，很简单，想清楚2*2的情况就可以做出来。
+
+ps: 高中讲数学归纳法的意义就在这了，动态规划的思想跟数学归纳法很相似，只需要证明两个情况下（0->1, x->x+1）状态转移方程成立即可。
+
+```java
+public int uniquePaths(int m, int n) {
+    int[][] dp = new int[m][n];
+    for (int i = 0; i<m; i++)
+        dp[i][0] = 1;
+    for (int i = 0; i<n; i++)
+        dp[0][i] = 1;
+    for (int i = 1; i<m; i++)
+        for (int j = 1; j<n; j++)
+            dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+    return dp[m - 1][n - 1];
+}
+```
+
+### 64. Minimum Path Sum
+
+```md
+Input:
+[
+  [1,3,1],
+  [1,5,1],
+  [4,2,1]
+]
+Output: 7
+Explanation: Because the path 1→3→1→1→1 minimizes the sum.
+```
+
+```py
+def minPathSum(self, grid):
+    if len(grid) == 0:
+        return 0
+    for i in range(0, len(grid)):
+        for j in range(0, len(grid[0])):
+            if i == 0 and j != 0:
+                grid[i][j] += grid[i][j-1]
+            elif j == 0 and i != 0:
+                grid[i][j] += grid[i-1][j]
+            elif i != 0 and j != 0:
+                grid[i][j] += min(grid[i][j-1], grid[i-1][j])
+    return grid[len(grid) - 1][len(grid[0]) - 1]
+```
+
+### 97. Interleaving String
+
+Given s1, s2, s3, find whether s3 is formed by the interleaving of s1 and s2.
+
+Solution: 二维DP，`dp[i][j]`意味着`s1[:i]`和`s2[:j]`可以构成`s3[i+j]`
+
+```py
+def isInterleave(self, s1, s2, s3):
+    # edge cases
+    if s1 == '':
+        return s2 == s3
+    if s2 == '':
+        return s1 == s3
+    if s3 == '':
+        return s1 == s2 == ''
+    len1, len2, len3 = len(s1), len(s2), len(s3)
+    if len3 != len1 + len2:
+        return False
+
+    # prepare DP matrix and base case
+    dp = [[0] * (len2 + 1) for _ in range(len1 + 1)]
+    # base case for s1 & s2
+    for i in range(1, len1 + 1):
+        dp[i][0] = s1[:i] == s3[:i]
+    for j in range(1, len2 + 1):
+        dp[0][j] = s2[:j] == s3[:j]
+    # non-base case
+    for i in range(1, len1 + 1):
+        for j in range(1, len2 + 1):
+            dp[i][j] = dp[i - 1][j] and s3[i + j - 1] == s1[i - 1] \
+                    or dp[i][j - 1] and s3[i + j - 1] == s2[j - 1]
+    return dp[len1][len2]
+```
+
+### 174. Dungeon Game
+
+m*n矩阵，骑士从左上走到右下，只能向右或向下，每个格子为骑士经过这个格子损失或增加的HP值，求骑士必须拥有的起始HP值
+
+1. 最低HP是1，0的话骑士就死了，而且中途不能出现0HP
+2. 从最右下到最左上DP
+3. 需求的HP就是格子里的HP的负值
+
+```py
+def calculateMinimumHP(self, dungeon):
+    if not dungeon or not dungeon[0]:
+        return 0
+    m = len(dungeon)
+    n = len(dungeon[0])
+    dp=[[2 ** 31 - 1] * (n + 1) for _ in range(m + 1)]
+    dp[m][n - 1]=1
+    dp[m - 1][n]=1
+    for i in range(m - 1, -1, -1):
+        for j in range(n - 1, -1, -1):
+            need = min(dp[i + 1][j], dp[i][j + 1]) - dungeon[i][j]
+            dp[i][j] = 1 if need <= 0 else need
+    return dp[0][0]
+```
+
+### 10 & 44. Regular Expression / Wildcard Matching
+
+Implement regular expression matching with support for '.' and '*'.
+
+- '.' Matches any single character.
+- '*' Matches zero or more of the preceding element.
+- The matching should cover the entire input string (not partial).
+
+使用动态规划。字符串为s，正则表达式为p。
+
+预处理：用dp[i][j]表示s串的前i个字符和p串的前j个字符是否匹配。dp[0][0] = true；
+
+如果p[i]为'\*'，则dp[0][i] 需要p一直为'\*'才为真
+
+1. 如果s[i] == p[j]或p[j] == '\.'，dp[i+1][j+1] = dp[i][j]；
+2. 如果p[j] == '\*'
+    1. 如果s[i] == p[j-1] 或p[j-1] == '\.'，dp[i+1][j+1]取下列三者的或
+        1. dp[i][j+1] （a*代表一个a）
+        2. dp[i+1][j] （a*代表多个a）
+        3. dp[i+1][j-1] （a*不代表a）
+    2. 否则的话dp[i+1][j+1] = dp[i+1][j-1] （a*不代表a）
+
+```java
+public boolean isMatch(String s, String p) {
+    // Corner case
+    if (s == null || p == null)
+        return false;
+
+    // Preprocessing
+    boolean [][] dp = new boolean[s.length() + 1][p.length() + 1];
+    dp[0][0] = true;
+    for (int i = 0; i <= p.length(); i++) {
+        dp[0][i + 1] = (p.charAt(i) == '*' && dp[0][i - 1]);
+    }
+
+    for (int i = 0; i < s.length(); i++) {
+        for (int j = 0; j < p.length(); j++) {
+            if (s.charAt(i) == p.charAt(j) || p.charAt(j) == '.')
+                dp[i + 1][j + 1] = dp[i][j];
+            else if (p.charAt(j) == '*') {
+                if (s.charAt(i) == p.charAt(j - 1) || p.charAt(j - 1) == '.')
+                    dp[i + 1][j + 1] = dp[i + 1][j - 1] || dp[i + 1][j] || dp[i][j + 1];
+                else
+                    dp[i + 1][j + 1] = dp[i + 1][j - 1];
+            }
+        }
+    }
+    return dp[s.length()][p.length()];
+}
+```
+
+Implement wildcard pattern matching with support for '?' and '\*'.
+
+- '?' Matches any single character.
+- '\*' Matches any sequence of characters (including the empty sequence).
+- The matching should cover the entire input string (not partial).
+
+这题和第10题几乎完全一样，只是关键字略有不同，因为'\*'前面不带任何字，所以：
+
+1. 如果s[i] == p[j-1] 或p[j-1] == '\.'，dp[i+1][j+1]取下列两者的或
+    1. dp[i][j+1] （*不代表任何字符）
+    2. dp[i+1][j] （*代表多个字符）
+
+```java
+public boolean isMatch(String s, String p) {
+    boolean[][] dp = new boolean[s.length() + 1][p.length() + 1];
+    dp[0][0] = true;
+    for (int i = 1; i <= p.length(); i++) {
+        dp[0][i] = p.charAt(i-1) == '*' && dp[0][i - 1];
+    }
+    for (int i = 0; i < s.length(); i++) {
+        for (int j = 0; j < p.length(); j++){
+            if (s.charAt(i) == p.charAt(j) || p.charAt(j) == '?')
+                dp[i + 1][j + 1] = dp[i][j];
+            else if (p.charAt(j) == '*')
+                dp[i + 1][j + 1] = dp[i + 1][j] || dp[i][j + 1];
+        }
+    }
+    return dp[s.length()][p.length()];
+}
 ```

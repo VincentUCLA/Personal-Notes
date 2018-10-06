@@ -41,26 +41,6 @@ public ListNode reverseBetween(ListNode head, int m, int n) {
 }
 ```
 
-### 234. Palindrome Linked List
-
-快慢指针求中点，然后用慢指针作为中点往后遍历，前半部分是本题的难点，如果希望不改动链表的话，需要从头到尾再从尾到头翻转两次
-
-```java
-def isPalindrome(self, head):
-    slow, fast = head, head
-    rev = None
-    while fast and fast.next:
-        fast = fast.next.next
-        rev, rev.next, slow = slow, rev, slow.next
-    if fast: tail = slow.next
-    else: tail = slow
-    while rev:
-        if rev.val != tail.val: return False
-        slow, slow.next, rev = rev, slow, rev.next
-        tail = tail.next
-    return True
-```
-
 ### 24. Swap Nodes in Pairs
 
 简单题，注意顺序即可
@@ -86,7 +66,7 @@ public ListNode swapPairs(ListNode head) {
 
 ## 2. 快慢指针
 
-### 141 & 142. Linked List Cycle ßI & II
+### 141 & 142. Linked List Cycle I & II
 
 这俩题快慢指针典型题，1的话就是快慢指针会在环路中相撞
 
@@ -128,6 +108,86 @@ public ListNode detectCycle(ListNode head) {
     }
     return null;
 }
+```
+
+### 143. Reorder List
+
+Given 1->2->3->4->5, reorder it to 1->5->2->4->3.
+
+这题见过就不难：
+
+1. 用快慢指针找到中点，从中点将链表截成两段
+2. 把后半段链表反转
+3. 把两个链表merge
+
+```py
+# @return A tuple containing the heads of the two halves
+def _splitList(head):
+    fast = head
+    slow = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next
+        fast = fast.next
+    middle = slow.next
+    slow.next = None
+    return head, middle
+
+# Reverses in place a list.
+# @return Returns the head of the new reversed list
+def _reverseList(head):
+    last = None
+    currentNode = head
+    while currentNode:
+        nextNode = currentNode.next
+        currentNode.next = last
+        last = currentNode
+        currentNode = nextNode
+    return last
+
+# Merges in place two lists
+# @return The newly merged list.
+def _mergeLists(a, b):
+    tail = a
+    head = a
+    a = a.next
+    while b:
+        tail.next = b
+        tail = tail.next
+        b = b.next
+        if a:
+            a, b = b, a
+    return head
+
+class Solution:
+    # @param head, a ListNode
+    # @return nothing
+    def reorderList(self, head):
+        if not head or not head.next:
+            return
+        a, b = _splitList(head)
+        b = _reverseList(b)
+        head = _mergeLists(a, b)
+```
+
+### 234. Palindrome Linked List
+
+快慢指针求中点，然后用慢指针作为中点往后遍历，前半部分是本题的难点，如果希望不改动链表的话，需要从头到尾再从尾到头翻转两次
+
+```java
+def isPalindrome(self, head):
+    slow, fast = head, head
+    rev = None
+    while fast and fast.next:
+        fast = fast.next.next
+        rev, rev.next, slow = slow, rev, slow.next
+    if fast: tail = slow.next
+    else: tail = slow
+    while rev:
+        if rev.val != tail.val: return False
+        slow, slow.next, rev = rev, slow, rev.next
+        tail = tail.next
+    return True
 ```
 
 ## 3. 其他杂题

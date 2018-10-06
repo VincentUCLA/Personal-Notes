@@ -219,6 +219,30 @@ public static int maxArea(int[] height) {
 }
 ```
 
+### 42. Trapping Rain Water
+
+Given n nonnegative integers representing an elevation map where the width of each bar is 1, compute how much water it is able to trap after raining.
+
+双指针从左右向中间“夹逼”：
+
+1. 以一个变量记录当前蓄水池的高度（初值为0）
+2. 夹逼时每遇到一个小于此高度的边，则移动指针并加入水量
+3. 否则在本轮迭代结束时改变当前蓄水池的高度，保证水池的高度在程序运行时是从小到大的
+
+```java
+public static int trap(int[] height) {
+    int l = 0, r = height.length - 1, water = 0, curH = 0;
+    while (l<r){
+        while (l<r && height[l]<=curH)
+            water += (curH - height[l++]);
+        while (l<r && height[r]<=curH)
+            water += (curH - height[r--]);
+        curH = Math.min(height[l], height[r]);
+    }
+    return water;
+}
+```
+
 ### 15. 3Sum
 
 3-sum并不是用的hashmap，还是排个序比较快
@@ -278,9 +302,11 @@ def threeSumClosest(self, num, target):
 ```py
 def fourSum(self, nums, target):
     def findNsum(nums, target, N, result, results):
-        if len(nums) < N or N < 2 or target < nums[0]*N or target > nums[-1]*N:   early termination
+        # early termination
+        if len(nums) < N or N < 2 or target < nums[0]*N or target > nums[-1]*N:
             return
-        if N == 2:  two pointers solve sorted 2-sum problem
+        # two pointers solve sorted 2-sum problem
+        if N == 2:
             l,r = 0,len(nums)-1
             while l < r:
                 s = nums[l] + nums[r]
@@ -293,32 +319,14 @@ def fourSum(self, nums, target):
                     l += 1
                 else:
                     r -= 1
-        else:  recursively reduce N
+        # recursively reduce N
+        else:
             for i in range(len(nums)-N+1):
                 if i == 0 or (i > 0 and nums[i-1] != nums[i]):
                     findNsum(nums[i+1:], target-nums[i], N-1, result+[nums[i]], results)
-
     results = []
     findNsum(sorted(nums), target, 4, [], results)
     return results
-```
-
-### 42. Trapping Rain Water
-
-Given n nonnegative integers representing an elevation map where the width of each bar is 1, compute how much water it is able to trap after raining.
-
-双指针从左右向中间“夹逼”，以一个变量记录当前蓄水池的高度（初值为0），夹逼时每遇到一个小于此高度的边，则移动指针并加入水量，否则在本轮迭代结束时改变当前蓄水池的高度
-
-```java
-public static int trap(int[] height) {
-    int l = 0, r = height.length - 1, water = 0, curH = 0;
-    while (l<r){
-        while (l<r && height[l]<=curH) water += (curH - height[l++]);
-        while (l<r && height[r]<=curH) water += (curH - height[r--]);
-        curH = Math.min(height[l], height[r]);
-    }
-    return water;
-}
 ```
 
 ## 4. Misc
