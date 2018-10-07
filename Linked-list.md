@@ -41,6 +41,34 @@ public ListNode reverseBetween(ListNode head, int m, int n) {
 }
 ```
 
+### 25. Reverse Nodes in k-Group
+
+1. 假设起点为i，每次前推k个node
+2. 然后翻转[i, i+k]
+
+```py
+def reverseKGroup(self, head, k):
+    dummy = jump = ListNode(0)
+    dummy.next = l = r = head
+
+    while True:
+        count = 0
+        # use r to locate the range
+        while r and count < k:
+            r = r.next
+            count += 1
+        # if size k satisfied, reverse the inner linked list
+        if count == k:
+            pre, cur = r, l
+            for _ in range(k):
+                # standard reversing
+                cur.next, cur, pre = pre, cur.next, cur
+            # connect two k-groups
+            jump.next, jump, l = pre, l, r
+        else:
+            return dummy.next
+```
+
 ### 24. Swap Nodes in Pairs
 
 简单题，注意顺序即可
@@ -60,6 +88,42 @@ public ListNode swapPairs(ListNode head) {
         move.next = cur;
         prev = cur;
     }
+    return dummy.next;
+}
+```
+
+### 61. Rotate List
+
+```md
+Input: 1->2->3->4->5->NULL, k = 2
+Output: 4->5->1->2->3->NULL
+Explanation:
+rotate 1 steps to the right: 5->1->2->3->4->NULL
+rotate 2 steps to the right: 4->5->1->2->3->NULL
+```
+
+这题的题眼在于k有可能会大于list长度……所以需要先遍历一轮list求长度，然后取余，然后rotate
+
+```java
+public ListNode rotateRight(ListNode head, int n) {
+    if (head == null || head.next == null)
+        return head;
+    ListNode dummy = new ListNode(0);
+    dummy.next = head;
+    ListNode fast = dummy,slow = dummy;
+
+    int i;
+    // Get the total length
+    for (i = 0; fast.next != null; i++)
+        fast = fast.next;
+    // Get the i - n % i th node
+    for (int j = i - n % i; j > 0; j--)
+        slow = slow.next;
+    // Do the rotation
+    fast.next = dummy.next;
+    dummy.next = slow.next;
+    slow.next = null;
+
     return dummy.next;
 }
 ```
@@ -190,6 +254,36 @@ def isPalindrome(self, head):
     return True
 ```
 
+### 160. Intersection of Two Linked Lists
+
+1. 双指针按同一速度推进两截链表A-C和B-C
+2. 当他们都走到尽头时交换位置，让他们走一个A-C-B和B-C-A
+3. 如此他们的长度差就被抹掉，交汇处就是两链表交点
+
+```python
+# @param two ListNodes
+# @return the intersected ListNode
+def getIntersectionNode(self, headA, headB):
+    if headA is None or headB is None:
+        return None
+
+    pa = headA # 2 pointers
+    pb = headB
+
+    while pa is not pb:
+        # if either pointer hits the end, switch head and continue the second traversal,
+        # if not hit the end, just move on to next
+        pa = headB if pa is None else pa.next
+        pb = headA if pb is None else pb.next
+
+    return pa # only 2 ways to get out of the loop, they meet or the both hit the end=None
+
+# the idea is if you switch head, the possible difference between length would be countered.
+# On the second traversal, they either hit or miss.
+# if they meet, pa or pb would be the node we are looking for,
+# if they didn't meet, they will hit the end at the same iteration, pa == pb == None, return either one of them is the same, None
+```
+
 ## 3. 其他杂题
 
 ### 2. Add Two Numbers
@@ -278,6 +372,31 @@ public ListNode mergeKLists(ListNode[] lists) {
         ListNode[] l2 = Arrays.copyOfRange(lists, lists.length/2, lists.length);
         return mergeTwoLists(mergeKLists(l1), mergeKLists(l2));
     }
+}
+```
+
+### 138. Copy List with Random Pointer
+
+这题目的题眼就是用一个map把链表的每个node存好……
+
+```java
+public RandomListNode copyRandomList(RandomListNode head) {
+    if (head == null) return null;
+    Map<RandomListNode, RandomListNode> map = new HashMap<RandomListNode, RandomListNode>();
+    // loop 1. copy all the nodes
+    RandomListNode node = head;
+    while (node != null) {
+        map.put(node, new RandomListNode(node.label));
+        node = node.next;
+    }
+    // loop 2. assign next and random pointers
+    node = head;
+    while (node != null) {
+        map.get(node).next = map.get(node.next);
+        map.get(node).random = map.get(node.random);
+        node = node.next;
+    }
+    return map.get(head);
 }
 ```
 

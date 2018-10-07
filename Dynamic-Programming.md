@@ -371,3 +371,76 @@ public boolean isMatch(String s, String p) {
     return dp[s.length()][p.length()];
 }
 ```
+
+### 121-123 & 188. 股票系列题
+
+1. 只允许交易一次，求最大收益
+2. 允许交易无数次，求最大收益
+3. 只允许交易2次，求最大收益
+4. 允许交易k次，求最大收益
+
+股票系列题里的1和2比较简单就不细说了
+
+```java
+public int maxProfit(int[] prices) {
+    if (prices.length == 0)
+        return 0;
+    int min = prices[0];
+    int profit = 0;
+    for (int i = 1; i < prices.length; i++) {
+        if (prices[i] < min)
+            min = prices[i];
+        else
+            if (prices[i] - min > profit)
+                profit = prices[i] - min;
+    }
+    return profit;
+}
+```
+
+```py
+def maxProfit(self, prices):
+    ret = 0
+    for i in range(1, len(prices)):
+        ret += max(0, prices[i] - prices[i-1])
+    return ret
+```
+
+3跟4先说4
+
+1. 这套题目里所有的股票都是T+1的，所以如果`k >= l / 2`，那么就直接上第2题答案
+2. DP：dp[i, j]代表最多i次交易之后在第j个价格的最大收益
+    1. 初始化：dp[i, 0] = 0，dp[0, j] = 0，没有买卖就没有杀害
+    2. dp[i, j] = max(dp[i, j-1], prices[j] - prices[jj] + dp[i-1, jj])
+        1. jj in range of [0, j-1]
+        2. 意思是dp[i, j]等于下列两项里的最大值
+            1. dp[i, j-1]
+            2. dp[i - 1, jj] + (price[j] - price[jj])
+    3. 推导得到dp[i, j] = max(dp[i, j-1], prices[j] + max(dp[i-1, jj] - prices[jj]))
+3. 第3题就是第4题变形，不需要思考
+
+```java
+public int maxProfit(int k, int[] prices) {
+    int len = prices.length;
+    if (k >= len / 2)
+        return quickSolve(prices);
+    int[][] dp = new int[k + 1][len];
+    for (int i = 1; i <= k; i++) {
+        int localMax =  -prices[0];
+        for (int j = 1; j < len; j++) {
+            dp[i][j] = Math.max(dp[i][j - 1], prices[j] + localMax);
+            localMax =  Math.max(localMax, dp[i - 1][j - 1] - prices[j]);
+        }
+    }
+    return dp[k][len - 1];
+}
+
+private int quickSolve(int[] prices) {
+    int len = prices.length, profit = 0;
+    for (int i = 1; i < len; i++)
+        // as long as there is a price gap, we gain a profit.
+        if (prices[i] > prices[i - 1])
+            profit += prices[i] - prices[i - 1];
+    return profit;
+}
+```
