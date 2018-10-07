@@ -444,3 +444,70 @@ private int quickSolve(int[] prices) {
     return profit;
 }
 ```
+
+## 3. 01背包问题
+
+### 416. Partition Equal Subset Sum
+
+01背包问题母题，请注意排序会造成`O(nlogn)`的复杂度，虽然直截了当但八成会TLE。
+
+1. `dp[i]`表示使用`nums`里的数字能否组成`i`
+
+```java
+public boolean canPartition(int[] nums) {
+    // edge case
+    if (nums == null || nums.length == 0)
+        return true;
+    // find half
+    int sum = 0;
+    for (int n:nums)
+        sum += n;
+    if (sum % 2 != 0)
+        return false;
+    int target = sum / 2;
+    // dp
+    boolean[] dp = new boolean[target+1];
+    dp[0] = true;
+    for(int num: nums)
+        for(int i = target; i >= num; i--)
+            dp[i] = dp[i - num] || dp[i];
+    return dp[target];
+}
+```
+
+### 474. Ones and Zeroes
+
+你有一串0和1组成的字符串，问用m个1和n个0能组成最多多少个字符串？
+
+```md
+Input: Array = {"10", "0001", "111001", "1", "0"}, m = 5, n = 3
+Output: 4
+
+Explanation: This are totally 4 strings can be formed by the using of 5 0s and 3 1s, which are “10,”0001”,”1”,”0”
+```
+
+典型的01背包问题
+
+1. `dp[i][j]`表示有i个0和j个1时能组成的最多字符串的个数
+2. 状态转移方程很简单，就是`dp[i][j] = Math.max(1 + dp[i - zeros][j - ones], dp[i][j])`
+3. 注意矩阵是从右下往左上递推的
+
+```java
+public int findMaxForm(String[] strs, int m, int n) {
+    int[][] dp = new int[m+1][n+1];
+    for (String s : strs) {
+        int[] count = count(s);
+        for (int i = m; i >= count[0]; i--)
+            for (int j = n; j >= count[1]; j--)
+                dp[i][j] = Math.max(1 + dp[i - count[0]][j - count[1]], dp[i][j]);
+    }
+    return dp[m][n];
+}
+
+public int[] count(String str) {
+    int[] res = new int[2];
+    for (int i=0;i<str.length();i++)
+        res[str.charAt(i) - '0']++;
+    return res;
+}
+```

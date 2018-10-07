@@ -451,6 +451,38 @@ Output: [3,1,null,null,2]
    2
 ```
 
+这题看着有点难，但实际上是利用的中序遍历的性质
+
+1. BST的中序遍遍历必为顺序，那么每次遍历的时候记录prev跟cur
+2. 第一次遇到`prev > cur`的话记录下来需要交换的`first = prev`
+3. 第二次记录下来`second = cur`
+4. 结尾处交换一下`first`和`second`即可
+
+```java
+TreeNode firstElement = null;
+TreeNode secondElement = null;
+TreeNode prevElement = new TreeNode(Integer.MIN_VALUE);
+public void recoverTree(TreeNode root) {
+    // In order traversal to find the two elements
+    traverse(root);
+    // Swap the values of the two nodes
+    int temp = firstElement.val;
+    firstElement.val = secondElement.val;
+    secondElement.val = temp;
+}
+private void traverse(TreeNode root) {
+    if (root == null)
+        return;
+    traverse(root.left);
+    if (firstElement == null && prevElement.val >= root.val)
+        firstElement = prevElement;
+    if (firstElement != null && prevElement.val >= root.val)
+        secondElement = root;
+    prevElement = root;
+    traverse(root.right);
+}
+```
+
 ### 108 & 109. Convert Sorted Array / List to Binary Search Tree
 
 这俩题目一样的套路，分治法，找到中点为root，然后递归左侧构建左子树，递归右侧构建右子树
