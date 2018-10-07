@@ -382,3 +382,66 @@ public void buildGraph(String[] words, boolean[][] adj, int[] visited) {
     }
 }
 ```
+
+### 126 & 127. Word Ladder I / II
+
+Given two words (beginWord and endWord), and a dictionary's word list, find all shortest transformation sequence(s) from beginWord to endWord, such that:
+
+1. Only one letter can be changed at a time
+2. Each transformed word must exist in the word list. Note that beginWord is not a transformed word.
+
+Note:
+
+- Return an empty list if there is no such transformation sequence.
+- All words have the same length.
+- All words contain only lowercase alphabetic characters.
+- You may assume no duplicates in the word list.
+- You may assume beginWord and endWord are non-empty and are not the same.
+
+```py
+beginWord = "hit",
+endWord = "cog",
+wordList = ["hot","dot","dog","lot","log","cog"]
+```
+
+Output:
+
+```py
+[
+  ["hit","hot","dot","dog","cog"],
+  ["hit","hot","lot","log","cog"]
+]
+```
+
+这题的思路是很无聊的，无非是BFS和DFS而已，难点：
+
+1. 两个字符串有一个char不同：这题大家用的都是笨方法，n^26
+2. 用一个parents<son, parent>储存从前向后的BFS所见到的顺序
+    1. key是变化后的单词，value是它的来源
+3. 曾经在parents里出现过一次的单词是不允许出现循环的
+4. 用update函数更新parents
+5. 用一轮反向DFS整理最后的结果：
+    1. r in res：r是从前向后的，但搜索的顺序是从后向前的
+
+```py
+def findLadders(self, beginWord, endWord, wordList):
+    dic = set(wordList)
+    level = {beginWord}
+    parents = collections.defaultdict(set)
+    while level and endWord not in parents:
+        next_level = collections.defaultdict(set)
+        for node in level:
+            for char in string.ascii_lowercase:
+                for i in range(len(beginWord)):
+                    n = node[:i] + char + node[i+1:]
+                    # 1. new word in wordList
+                    # 2. no cycle in ladder
+                    if n in dic and n not in parents:
+                        next_level[n].add(node)
+        level = next_level
+        parents.update(next_level)
+    res = [[endWord]]
+    while res and res[0][0] != beginWord:
+        res = [r.append(p) for r in res for p in parents[r[0]]]
+    return res
+```
